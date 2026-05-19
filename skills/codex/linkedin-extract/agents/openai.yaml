@@ -1,0 +1,4 @@
+interface:
+  display_name: "LinkedIn Extract"
+  short_description: "Extract profile and job data from LinkedIn"
+  default_prompt: "Use $linkedin-extract to extract structured data from this LinkedIn profile or job post."

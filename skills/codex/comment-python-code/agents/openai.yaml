@@ -1,0 +1,4 @@
+interface:
+  display_name: "Comment Python code"
+  short_description: "Add concise comments to Python code"
+  default_prompt: "Use $comment-python-code to add concise comments to this Python code."

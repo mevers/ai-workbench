@@ -1,0 +1,4 @@
+interface:
+  display_name: "Blink Book"
+  short_description: "Create mobile book learning curricula"
+  default_prompt: "Use $blink-book to turn this nonfiction book into a mobile-friendly key-ideas curriculum with quizzes."

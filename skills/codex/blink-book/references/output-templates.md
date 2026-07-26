@@ -85,10 +85,10 @@ Grounded in <part/chapter/section/figure/table/source anchor>. Page numbers only
 
 ---
 
-Previous: [Key Idea N-1](key-idea-NN.md) | Next: [Key Idea N+1](key-idea-NN.md)
+[Back to overview](overview.md) | Previous: [Key Idea N-1](key-idea-NN.md) | Next: [Key Idea N+1](key-idea-NN.md)
 ```
 
-For the first key idea, omit `Previous`. For the last key idea, omit `Next`.
+For the first key idea, omit `Previous`. For the last key idea, omit `Next`. Keep the `overview.md` backlink in every key-idea file.
 
 ## comprehension quiz
 

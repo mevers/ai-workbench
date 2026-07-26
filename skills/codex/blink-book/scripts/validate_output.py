@@ -57,6 +57,8 @@ def main() -> int:
             errors.append(f"{path.name}: linked quiz file missing: {expected_quiz.relative_to(book_dir)}")
         if "## Source Basis" not in text:
             errors.append(f"{path.name}: missing Source Basis section")
+        if "overview.md" not in text:
+            errors.append(f"{path.name}: missing backlink to overview.md")
         if not has_prev_next(text, idx, len(key_files)):
             errors.append(f"{path.name}: missing expected previous/next navigation")
 

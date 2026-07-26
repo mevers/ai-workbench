@@ -82,7 +82,7 @@ Match the Blinkist model:
 - Keep book-specific examples short. Default to at most one brief example per key idea, and include it only when it clarifies the transferable idea.
 - Include an overview landing file with title, author, total estimated reading time, key-idea table of contents, visual inventory link, quiz index, and review link.
 - Put the real title inside each file, not in the filename. Use stable filenames: `key-idea-01.md`, `key-idea-02.md`, etc.
-- Include previous/next navigation at the bottom of each key-idea file.
+- Include a backlink to `overview.md` and previous/next navigation at the bottom of each key-idea file.
 - Add a section-level `Source basis` note at the bottom of each key idea. Prefer stable anchors such as part, chapter, section heading, named figure/table, or EPUB anchor. Use PDF page numbers only when unavoidable.
 
 ## Source Terminology Integrity

@@ -116,6 +116,7 @@ Style for this user:
 - Avoid meta labels such as `the transferable lesson is this`. State the lesson directly.
 - Avoid motivational filler, corporate fluff, and chatty over-explanation.
 - Use short paragraphs, bullets, and tables to reduce prose load.
+- Do not use em dashes in learner-facing files unless reproducing a source quotation verbatim. Rewrite with a period, comma, colon, parentheses, or ordinary hyphen as appropriate.
 - Define any critical proper noun, acronym, role, setting-specific term, or domain term briefly at first use in the relevant sentence. Do not create a separate glossary or abstract terms section.
 - Make cause/effect, constraints, tradeoffs, and failure modes visible in plain language.
 - Add an optional `Mechanism` block only when it clarifies the idea; if used, define what the mechanism does in ordinary words.
@@ -128,7 +129,7 @@ Keep learner-facing summary reading time under 60 minutes. Estimate at 225 words
 
 Each key idea should usually take about 5-8 minutes to read, but can be shorter when the idea is simple. Use longer sections only when needed to preserve an important mechanism, distinction, or source-supported nuance.
 
-Create at most one comprehension question per key idea. Put it in a separate quiz file with the answer hidden in a collapsible `<details>` block. Create optional going-beyond quiz files only when useful, and keep them separate from comprehension checks.
+Create at most one comprehension question per key idea. Put it in a separate quiz file with the answer hidden in a collapsible `<details>` block. Render every multiple-choice option as a lettered choice (`A.` through `D.`), with a blank line between choices. Bold the letter label only, not the option text. Bold the correct answer letter in the answer block. Do not use bullet points for quiz options. Create optional going-beyond quiz files only when useful, and keep them separate from comprehension checks.
 
 Create `review.md` by default. Repeat all comprehension questions directly in sequence with collapsed answers.
 

@@ -99,15 +99,18 @@ For the first key idea, omit `Previous`. For the last key idea, omit `Next`. Kee
 
 <One multiple-choice question that checks comprehension of the key idea.>
 
-A. <Option>
-B. <Option>
-C. <Option>
-D. <Option>
+**A.** <Option>
+
+**B.** <Option>
+
+**C.** <Option>
+
+**D.** <Option>
 
 <details>
 <summary>Answer</summary>
 
-Correct: <Letter>
+Correct: **<Letter>**
 
 <Brief explanation tied to the source idea.>
 
@@ -125,15 +128,18 @@ Correct: <Letter>
 
 <One optional application or transfer question. Use only when useful.>
 
-A. <Option>
-B. <Option>
-C. <Option>
-D. <Option>
+**A.** <Option>
+
+**B.** <Option>
+
+**C.** <Option>
+
+**D.** <Option>
 
 <details>
 <summary>Answer</summary>
 
-Best answer: <Letter>
+Best answer: **<Letter>**
 
 <Brief explanation. Mark this as application beyond the source, not direct source recall.>
 
@@ -153,15 +159,18 @@ Estimated time: <N> minutes
 
 <Repeat comprehension question from Key Idea 1.>
 
-A. <Option>
-B. <Option>
-C. <Option>
-D. <Option>
+**A.** <Option>
+
+**B.** <Option>
+
+**C.** <Option>
+
+**D.** <Option>
 
 <details>
 <summary>Answer</summary>
 
-Correct: <Letter>
+Correct: **<Letter>**
 
 <Brief explanation.>
 

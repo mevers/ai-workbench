@@ -13,7 +13,7 @@ extraction_quality: "high|medium|low|not-applicable"
 visual_access_status: "complete|partial|none|not-applicable"
 limitations:
   - "<Any source, extraction, OCR, or visual limitation. Use [] if none.>"
-key_idea_count: 8
+key_idea_count: <source-derived count>
 estimated_reading_minutes: 42
 generated_date: "YYYY-MM-DD"
 language: "English"
@@ -72,8 +72,9 @@ Original source visuals are stored in [visuals/](visuals/). Only include visuals
 
 ## Remember This
 
-- <One compressed takeaway.>
-- <Another compressed takeaway.>
+<!-- Use bullet points. Vary their number and length according to the key idea; include only what the reader should retain after the details fade. -->
+
+- <A concise retention takeaway.>
 
 ## Check Understanding
 

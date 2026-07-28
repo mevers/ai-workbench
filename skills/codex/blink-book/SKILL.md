@@ -1,13 +1,13 @@
 ---
 name: blink-book
-description: Create Blinkist-style learning curricula from one nonfiction book or book-like resource, especially when the user provides a book title, PDF, EPUB, or asks for a mobile-friendly key-ideas summary with quizzes. Use when Codex must verify familiarity/access to the source, process book content and original visuals without loading the whole book into context, produce section-based Markdown under a per-book folder, extract source visuals as PNGs, create comprehension checks, and keep the learner-facing reading time under 1 hour.
+description: Create Blinkist-style learning curricula from one nonfiction book or book-like resource, especially when the user provides a book title, PDF, EPUB, or asks for a mobile-friendly key-ideas summary with quizzes. Use when Codex must verify familiarity/access to the source, process book content and original visuals without loading the whole book into context, produce section-based Markdown under a per-book folder, extract source visuals as PNGs, and create comprehension checks.
 ---
 
 # Blink Book
 
 ## Purpose
 
-Turn one nonfiction book into a mobile-friendly learning curriculum modeled on Blinkist: usually 7-8 transferable key ideas, crisp accessible prose, original visuals only, one short comprehension check per key idea, and a final review. Write in English.
+Turn one nonfiction book into a mobile-friendly learning curriculum modeled on Blinkist: a source-derived set of transferable key ideas, crisp accessible prose, original visuals only, one short comprehension check per key idea, and a final review. Write in English.
 
 Use a book-centered output folder:
 
@@ -63,8 +63,8 @@ Never load an entire book into context. Work in bounded passes and write interme
 5. Read the source map, table of contents, intro/conclusion, headings, chapter openings/endings, and figure captions.
 6. Create `_work/source-terms.md` before synthesis. Record the author's named models, pillars, frameworks, recurring key terms, acronyms, and any terms the book explicitly defines. Include the source anchor for each and mark which terms must appear verbatim in the overview or key ideas.
 7. Process the book in passes. Write concise notes in `_work/chapter-notes/`; do not keep the whole source in chat context.
-8. Synthesize the strongest teachable ideas, prioritizing Blinkist-style key ideas over chapter-by-chapter structure.
-9. Before drafting learner-facing files, create `_work/key-idea-plan.md`. For each proposed key idea, include: transferable takeaway, why it matters, source basis, named source terms to preserve verbatim, critical terms to define in-line, and book-specific example to use or omit.
+8. Synthesize the strongest teachable ideas from the source. Derive the number of key ideas from the book's arguments, named models, major practices, and important distinctions; do not start from a target count.
+9. Before drafting learner-facing files, create `_work/key-idea-plan.md` with a source-coverage map. List every material model, argument, chapter, or recurring practice; mark it as represented by a key idea, merged into one, or intentionally omitted, with a short reason. For each proposed key idea, include: transferable takeaway, why it matters, source basis, named source terms to preserve verbatim, critical terms to define in-line, and book-specific example to use or omit. Record the source-derived key-idea count and rationale.
 10. Reread only the source chunks needed for each key idea before writing the final section and quiz.
 11. Run word-count and link/visual validation scripts before final delivery.
 
@@ -76,7 +76,7 @@ Match the Blinkist model:
 
 - Surface the book's most valuable and memorable transferable insights.
 - Create a clear structure that brings those ideas to light.
-- Use numbered key ideas, not chapter summaries.
+- Use a source-derived number of numbered key ideas, not chapter summaries. A key idea must express one coherent takeaway or insight. It may span multiple chapters, and one chapter may contribute to several key ideas. Use chapters as source anchors and evidence, never as the default unit of synthesis.
 - Follow the Blinkist approach: key ideas are the big transferable takeaways, not book-specific stories, scenes, or examples. Use anecdotes only as brief support for the broader idea.
 - Give every key idea a title that states a transferable lesson. Do not title a key idea after an anecdote, chapter event, place, person, object, or phrase from the book unless the book is specifically about that case.
 - Keep book-specific examples short. Default to at most one brief example per key idea, and include it only when it clarifies the transferable idea.
@@ -96,8 +96,7 @@ Preserve the author's named model terms. Plain paraphrase is useful for explaini
 - In key ideas, use the source term when the section teaches that concept, then define it in-line with plain wording.
 - Do not swap a source term for a broader synonym when that would hide the author's structure. For example, do not replace a named pillar with a paraphrase like `skill` unless the source term also appears nearby.
 - Do not invent a neat triad, framework, or label from adjacent concepts. If the source does not name it that way, present it as an interpretation, not as the author's model.
-- Keep the learner-facing summary source-pure. Do not mention the user's comments, questions, corrections, disputes, prior drafts, audits, or why a term is included or excluded. Use feedback only to improve the process and the `_work/` files. The final learner-facing prose must read as if written directly from the book.
-- If a user correction reveals a missing source term, add the term where the book teaches it and define it plainly. Do not add defensive sentences such as `X matters, but Y is the real model` unless the book itself makes that contrast.
+- Keep learner-facing prose source-pure. Do not mention user feedback, prior drafts, or the drafting process.
 
 Style for this user:
 
@@ -105,9 +104,7 @@ Style for this user:
 - Be crisp, precise, and accessible without dumbing down.
 - Use plain, literal wording. Avoid vague metaphors, business buzzwords, and consultant shorthand. Plain does not mean childish; it means the reader should not need to translate the sentence.
 - Run these sentence-level tests on learner-facing prose:
-  - Actor test: can the reader tell who does what?
-  - Decision test: if the sentence is about power or authority, does it say what people are allowed to decide?
-  - Concrete meaning test: can an abstract noun be replaced by a concrete action without losing meaning?
+  - Directness test: is this a direct paraphrase of the book's point, rather than a more general interpretation that adds no needed distinction?
   - One-read test: can a smart reader understand the sentence after one read?
   - One-idea test: does the sentence carry one main idea? Split it if it carries a rule, reason, and example at once.
 - Prefer active voice and present tense unless another form is clearer.
@@ -119,15 +116,39 @@ Style for this user:
 - Do not use em dashes in learner-facing files unless reproducing a source quotation verbatim. Rewrite with a period, comma, colon, parentheses, or ordinary hyphen as appropriate.
 - Define any critical proper noun, acronym, role, setting-specific term, or domain term briefly at first use in the relevant sentence. Do not create a separate glossary or abstract terms section.
 - Make cause/effect, constraints, tradeoffs, and failure modes visible in plain language.
-- Add an optional `Mechanism` block only when it clarifies the idea; if used, define what the mechanism does in ordinary words.
-- During drafting, mark vague, generic, jargony, or compressed sentences as `TOO GENERIC` in notes and rewrite them before final output.
-- Before final output, review learner-facing prose for jargon, buzzwords, and compressed phrasing. Judge the sentence, not isolated words. Rewrite only when the sentence is unclear, too abstract, or makes the reader translate the idea.
+- Keep the Blinkist-style structure: clear headings, a useful point near the start of each key idea, short paragraphs, and lists when they improve scanning. Do not remove structure merely to vary the prose.
+- When several concrete examples or illustrations are easier to scan as a list, use bullet points instead of prose. Keep each bullet as clear and direct as the surrounding prose, and use a list only when it improves understanding.
+- Prefer a direct paraphrase of the book's argument over a more general interpretation of it. Keep an interpretive or abstract formulation only when it adds a distinction the direct wording would lose.
+- If a sentence can be made plainer and more direct without losing meaning, rewrite it. Be especially suspicious of wording that describes the book from one conceptual level above rather than stating its point.
+- Each key idea must include at least one source-specific element: a key finding, named framework, precise distinction, concrete practice, or revealing source example. Do not replace source details with generic language.
+- Use `Remember This` as a retention recap, not a disguised homework prompt. Render it as bullet points. Choose the number and length of bullets according to the form and complexity of the key idea; do not force a fixed count. Include the central conclusion and any essential condition, distinction, or named part of the model needed to prevent a misleading recollection. Do not use it to recap every point or introduce a new example, application, qualification, or secondary claim.
+
+## Big-Picture Writing
+
+For the Big Picture in `overview.md`:
+
+1. **Focus on the book’s transferable ideas.** Tell the reader what the book teaches. Use specific settings and scenarios to establish the stakes or clarify the argument.
+2. **Preserve and plainly explain the book’s central models, pillars, and frameworks when they are present.** Key concepts are more important than specific story details.
+3. **Use the right level of abstraction.** Make models, pillars, and frameworks concrete. Do not invent vague labels.
+4. **Use case studies and examples as evidence, not the main story.**
+
+## Big-Picture Validation
+
+Before delivery, assess `overview.md` against all five checks:
+
+1. **Premise:** Does it identify the real problem, question, or subject of the book, rather than a downstream symptom?
+2. **Argument:** Does it state the book’s main transferable idea and any central named model, pillar, or framework?
+3. **Selection:** Do settings, examples, and outcomes clarify the argument rather than become the story?
+4. **Fidelity:** Are the central claims supported by relevant source passages, without invented labels, causal claims, or evaluations?
+5. **Clarity:** Can a smart reader understand the overview in one read, including why the book matters?
 
 ## Length And Quizzes
 
-Keep learner-facing summary reading time under 60 minutes. Estimate at 225 words/minute. Do not enforce Blinkist's strict 15-minute total timebox; use the length needed for clear transferable learning while staying under one hour. Shorter is better when it does not oversimplify.
+Keep learner-facing summary reading time under 45 minutes. Estimate summary text only, excluding quizzes and review, at 225 words per minute. Record the calculated estimate, rounded to the nearest whole minute, in `metadata.yaml` and `overview.md`; do not add a separate estimate for the full learning experience.
 
-Each key idea should usually take about 5-8 minutes to read, but can be shorter when the idea is simple. Use longer sections only when needed to preserve an important mechanism, distinction, or source-supported nuance.
+Never ask the user to choose a duration. Estimate the appropriate length from the source-derived number of core ideas. Plan for roughly five minutes of reading per key idea; three to eight minutes per idea is normal, depending on the material. This is a planning heuristic, not a target or a reason to change the source-derived idea count. Allocate space according to the source: a key idea may need an explanation of the claim, why it works, its limits or tradeoffs, and a source-supported example or practice. Do not reduce an idea to a headline, one named term, and an application merely to be concise.
+
+If a new version is materially shorter than an existing trusted version, explain the reduction in `_work/final-audit.md` and treat it as a likely regression unless source coverage has demonstrably improved.
 
 Create at most one comprehension question per key idea. Put it in a separate quiz file with the answer hidden in a collapsible `<details>` block. Render every multiple-choice option as a lettered choice (`A.` through `D.`), with a blank line between choices. Bold the letter label only, not the option text. Bold the correct answer letter in the answer block. Do not use bullet points for quiz options. Create optional going-beyond quiz files only when useful, and keep them separate from comprehension checks.
 
@@ -147,12 +168,13 @@ Create `review.md` by default. Repeat all comprehension questions directly in se
 Before responding to the user:
 
 1. Verify `metadata.yaml`, `overview.md`, `review.md`, `quizzes/`, `visuals/`, and `_work/` exist as applicable.
-2. Run `scripts/count_reading_time.py books/<book-slug>` and compress if over 60 minutes.
+2. Run `scripts/count_reading_time.py books/<book-slug> --limit-minutes 45`. Fail if the learner-facing summary exceeds 45 minutes. Do not treat a shorter result as a success without checking the source-coverage map.
 3. Run `scripts/validate_output.py books/<book-slug>` and fix missing links, missing quiz files, missing previous/next navigation, and missing visual files.
 4. Create `_work/final-audit.md` with one row per key idea covering: undefined critical terms, vague wording, jargon, overcompressed sentences, story dominance, transferability, and source support.
 5. Add a source-terminology audit to `_work/final-audit.md`: list every required term from `_work/source-terms.md`, where it appears in learner-facing files, and whether it is defined in-line. Fix missing or mislabeled source terms before delivery.
-6. Run a source-purity audit over learner-facing files. Remove any wording that responds to the user's feedback, explains a prior mistake, mentions an audit, or contrasts a user-suggested term with the source model instead of summarizing the book.
-7. Run a clarity audit sentence by sentence. Use the actor, decision, concrete meaning, one-read, and one-idea tests. Do not remove words just because they appear on a review list; remove or rewrite only when the sentence is unclear, too abstract, or too compressed.
+6. Run a source-purity audit over learner-facing files.
+7. Run a clarity audit sentence by sentence using the directness, one-read, and one-idea tests.
 8. Run a transferability audit: every key idea must answer what the learner can use outside the book's specific setting. Source-specific examples must support the idea, not become the main point or title, unless the book is itself about that specific case.
-9. If a user says the summary is untrusted or broadly flawed, regenerate learner-facing files from source notes and source chunks. Do not patch the existing summary as the primary repair.
-10. State any source or extraction limitations plainly.
+9. Run a source-coverage audit. Confirm that the key-idea count is derived from `_work/key-idea-plan.md`, every material source element has an explicit treatment, and the learner-facing structure is not a chapter-by-chapter summary. Verify that each key idea has one coherent takeaway and that cross-chapter evidence is merged where it serves that takeaway.
+10. If a user says the summary is untrusted or broadly flawed, regenerate learner-facing files from source notes and source chunks. Do not patch the existing summary as the primary repair.
+11. State any source or extraction limitations plainly.

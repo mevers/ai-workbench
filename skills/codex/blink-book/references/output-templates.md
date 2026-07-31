@@ -66,10 +66,6 @@ Original source visuals are stored in [visuals/](visuals/). Only include visuals
 
 <Continue explanation only if the visual is directly relevant. Do not include visuals decoratively.>
 
-## Mechanism
-
-<Optional. Use only when it clarifies cause/effect, constraints, tradeoffs, or a repeatable pattern.>
-
 ## Remember This
 
 <!-- Use bullet points. Vary their number and length according to the key idea; include only what the reader should retain after the details fade. -->

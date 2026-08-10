@@ -1,13 +1,35 @@
 ---
 name: blink-book
-description: Create Blinkist-style learning curricula from one nonfiction book or book-like resource, especially when the user provides a book title, PDF, EPUB, or asks for a mobile-friendly key-ideas summary with quizzes. Use when Codex must verify familiarity/access to the source, process book content and original visuals without loading the whole book into context, produce section-based Markdown under a per-book folder, extract source visuals as PNGs, and create comprehension checks.
+description: Create Blinkist-style book learning curricula from one nonfiction book or book-like resource. Use when the user provides a book title, PDF, EPUB, or asks to create a full Blink Book, a Blink-only summary, or an assessment for an existing Blink Book. Verify source access, process book content and original visuals without loading the whole book into context, produce section-based Markdown, and create evidence-based comprehension checks.
 ---
 
 # Blink Book
 
 ## Purpose
 
-Turn one nonfiction book into a mobile-friendly learning curriculum modeled on Blinkist: a source-derived set of transferable key ideas, crisp accessible prose, original visuals only, one short comprehension check per key idea, and a final review. Write in English.
+Turn one nonfiction book into a mobile-friendly learning curriculum modelled on Blinkist: a source-derived set of transferable key ideas, crisp accessible prose, original visuals only, and, when requested, comprehension checks and a final review. Write in English.
+
+## Modes
+
+Use **all** by default. A request to “create a blink”, “create a Blink Book”, “summarise this book”, or similar ordinary language always means **all** unless the user explicitly asks for the assessment-free variant.
+
+Use the assessment-free **blink-only** variant only when the user says one of these exact phrases, case-insensitively: **“summary only”**, **“no assessment”**, or **“blink-only”**. Do not infer blink-only mode from the word “blink” by itself.
+
+- **all:** Create the complete Blink Book: source work, overview, key ideas, visuals, quizzes, and review. Complete the learner-facing phase before starting the assessment phase.
+- **blink-only:** Create or regenerate only the source work, overview, key ideas, and visuals. Do not create or modify `quizzes/` or `review.md`; do not inspect or use an application context. Omit assessment links from the overview and key ideas. If assessment files already exist, leave them untouched. Run the existing validator with `--mode blink` for this internal mode.
+- **assessment:** Create or regenerate only `quizzes/` and `review.md` for an existing complete Blink Book. Require `metadata.yaml`, `overview.md`, all `key-idea-*.md` files, `visuals/`, and required source-work files to exist first. Never modify the overview, metadata, key ideas, visuals, source-work files, or source material. If they are incomplete, stop and tell the user what the existing Blink Book needs; do not repair it as part of assessment mode.
+
+In **all** mode, write the overview and key-idea assessment navigation during the learner-facing phase, then create the assessment without altering those files. This preserves the same boundary as `assessment` mode.
+
+## Mandatory independent first-reader review
+
+For every `all` or `blink-only` Blink Book, the main agent must delegate the source-blind first-reader review to a separate sub-agent before delivery. This is mandatory, not an optional final check.
+
+- Spawn the reviewer with no conversation fork. Give it only the final `key-idea-*.md` paths and the review task; do not pass source material, summaries, plans, drafts, audits, or the expected conclusions.
+- Instruct the reviewer to read only the final learner-facing key-idea files. It may revise those files for reader clarity and must write the required `key-idea-NN-first-reader-review.md` records.
+- The reviewer must be a separate agent from the writer and must declare its source-blind conditions in each record.
+- Do not create, describe, or deliver a Blink Book as complete while this review is pending. If a separate sub-agent cannot be spawned, stop and report that the Blink Book cannot be completed under this skill.
+- This requirement does not apply to `assessment` mode because that mode must not alter existing learner-facing key ideas.
 
 Use a book-centered output folder:
 
@@ -18,10 +40,9 @@ books/<book-slug>/
   key-idea-01.md
   key-idea-02.md
   ...
-  review.md
-  quizzes/
+  review.md                    # all and assessment modes only
+  quizzes/                     # all and assessment modes only
     key-idea-01-comprehension.md
-    key-idea-01-going-beyond.md
   visuals/
     chapter-02-fig-01.png
   _work/
@@ -34,6 +55,8 @@ books/<book-slug>/
     key-idea-plan.md
     idea-argument-packs/
     key-idea-drafts/
+      key-idea-01-full-draft.md
+      key-idea-01-first-reader-review.md
     final-audit.md
     chapter-notes/
 ```
@@ -72,8 +95,11 @@ Never load an entire book into context. Work in bounded passes and write interme
 10. Draft the Big Picture from the same source-structure and evidence work. Keep the Big-Picture Writing and Big-Picture Validation rules below unchanged. It has its own synthesis job; do not construct it by mechanically shortening the key ideas.
 11. For each key idea, reread its linked source chunks and create `_work/idea-argument-packs/key-idea-NN.md`. Assemble enough source material to support a full explanation: the conclusion, the problem or tension it addresses, the causal explanation, essential conditions or limits, concrete source detail, and the transferable implication. Include a plain-language argument chain that states the source fact, the mechanism, the concept, and the transferable conclusion. Do not write learner-facing prose until this chain explains how the source detail supports the conclusion. An argument pack is not a concise evidence summary and is not learner-facing prose.
 12. Design the reader’s path for each idea before drafting. First decide the transferable conclusion and central model or distinction the reader must understand. Then select only the source detail needed to explain and support that argument. Choose the sequence that best serves it, and decide where prose, a short list, a comparison, or a sequence will improve reading. Do not use a fixed section template.
-13. Write a deliberately fuller first draft from the argument pack in `_work/key-idea-drafts/`. Then tighten it into the learner-facing section by removing repetition, generic extrapolation, and source detail that does not advance the explanation; restructure when it improves scanning. Before finalising, run a literal-language pass: for every sentence, ask whether a reader can identify what it refers to, what happens, and why it matters in this argument. Rewrite from the argument chain or remove any sentence that fails. Do not add post-hoc padding to meet a reading-time estimate. If tightening reveals a thin idea, return to the argument pack and source chunks, then rebuild the explanation.
-14. Draft the quiz only after its learner-facing key idea is final. Run `scripts/validate_source_work.py books/<book-slug>` before drafting and again before final delivery. Run word-count and link/visual validation scripts before final delivery.
+13. Write a deliberately fuller first draft from the argument pack in `_work/key-idea-drafts/key-idea-NN-full-draft.md`. Then tighten it into the learner-facing section by removing repetition, generic extrapolation, and source detail that does not advance the explanation; restructure when it improves scanning. Before finalising, run a literal-language pass: for every sentence, ask whether a reader can identify what it refers to, what happens, and why it matters in this argument. Rewrite from the argument chain or remove any sentence that fails. Do not add post-hoc padding to meet a reading-time estimate. If tightening reveals a thin idea, return to the argument pack and source chunks, then rebuild the explanation.
+13a. Run a **source-blind first-reader review** on the final learner-facing key idea before it can pass. In `all` or `blink-only` mode, satisfy the mandatory delegation rule above: spawn a separate sub-agent with no conversation fork, and give it only the final key-idea file paths and the review task. The reviewer must receive no book, source chunks, argument pack, plan, draft, prior audit, overview, or quiz. The author cannot approve their own prose. The reviewer must reconstruct the central conclusion, key mechanism, and action or implication from the text alone; record any unresolved confusion. For every unfamiliar named person, organisation, place, event, case, or historical reference, the reviewer must state what it is, what happens or decision is relevant, the outcome where needed, and why it belongs in the argument. A reference fails if its required context lives only in a map, image, source note, linked quiz, or the reviewer’s prior knowledge. Revise and re-review until every necessary reference passes.
+13b. In `_work/key-idea-drafts/key-idea-NN-first-reader-review.md`, retain the review using this exact structure: `## Review conditions` with `Reviewer`, `Writer and reviewer are different: yes`, and confirmation that it was source-blind and reviewed the final learner-facing file; `## Reader reconstruction` with `Central conclusion`, `Key mechanism`, `Action or implication`, and `Unresolved confusion`; `## Unfamiliar names and case examples`, with one `### <name>` record per reference containing `What is it`, `What happens`, `Why it matters here`, `Final-prose evidence`, and `Verdict`; `## Terms and labels`, containing `Source-defined terms retained` and `Non-source labels removed or rewritten`; and `## Gate decision`, containing `Decision: PASS` only when no required reader question remains unresolved. A missing review is a completion blocker in `all` and `blink-only` mode; do not deliver a partial Blink Book or leave this gate pending.
+14. In `all` or `blink-only` mode, finish the learner-facing summary and run `scripts/validate_source_work.py books/<book-slug>` before beginning any assessment work. In `blink-only` mode, stop here.
+15. In `all` or `assessment` mode, use the application-context workflow below before designing assessments. Do not create, configure, edit, or offer to create an application context as part of this skill.
 
 For PDFs, inspect extraction quality before synthesis. If text order, OCR, or visual extraction is unreliable, report the limitation and ask for a better source when the problem prevents faithful output.
 
@@ -87,9 +113,9 @@ Match the Blinkist model:
 - Follow the Blinkist approach: key ideas are the big transferable takeaways, not book-specific stories, scenes, or examples. Use anecdotes only as brief support for the broader idea.
 - Give every key idea a title that states a transferable lesson. Do not title a key idea after an anecdote, chapter event, place, person, object, or phrase from the book unless the book is specifically about that case.
 - Keep book-specific examples short. Default to at most one brief example per key idea, and include it only when it clarifies the transferable idea.
-- Include an overview landing file with title, author, total estimated reading time, key-idea table of contents, visual inventory link, quiz index, and review link.
+- Include an overview landing file with title, author, total estimated reading time, key-idea table of contents, and visual inventory link. In `all` mode, also include quiz and review links. In `blink-only` mode, omit them. In `assessment` mode, do not alter the overview.
 - Put the real title inside each file, not in the filename. Use stable filenames: `key-idea-01.md`, `key-idea-02.md`, etc.
-- Include a backlink to `overview.md` and previous/next navigation at the bottom of each key-idea file.
+- Include a backlink to `overview.md` and previous/next navigation at the bottom of each key-idea file. In `all` mode, the final key idea must use its `Next` link for [End-of-book review](review.md). In `blink-only` mode, the final key idea has no `Next` link. In `assessment` mode, do not alter any key-idea file.
 - Add a section-level `Source basis` note at the bottom of each key idea. Prefer stable anchors such as part, chapter, section heading, named figure/table, or EPUB anchor. Use PDF page numbers only when unavoidable.
 
 ## Source Terminology Integrity
@@ -108,6 +134,7 @@ Preserve the author's named model terms. Plain paraphrase is useful for explaini
 ## Writing Key Ideas
 
 - Write for a smart expert entering a new domain. Be clear, precise, and accessible without simplifying the book’s argument.
+- Use sentence case and British English in all learner-facing headings. Capitalise the first word of the heading and the first word after a colon, plus abbreviations and proper nouns; do not use title case.
 - Build each key idea as one connected explanation. Establish the conclusion, use source detail to explain it, and show why it matters. Choose the order that best serves the argument.
 - Make relationships explicit. Name who did what, what changed, and why it mattered when the source describes a sequence, contrast, cause, decision, or outcome. Do not make the reader infer the connection between paragraphs.
 - Start with the source’s concrete claims, actions, distinctions, and examples. Generalise only after the reader can see the point. Do not replace source detail with generic workplace language or an abstract diagnosis.
@@ -133,6 +160,8 @@ Do not use a generic pass/fail checklist. For each final key idea, create `_work
 
 Then apply the literal-language pass to every sentence. A final key idea fails validation when a reader cannot identify what a sentence refers to, what happens, and why it matters to the argument; when a central named term is introduced but not explained; or when the source example rather than the transferable argument determines the structure. Return to the argument chain and revise before delivery.
 
+The clarity review records the author’s diagnostic work; it does not replace the independent source-blind first-reader gate. Preserve source-defined technical terms that carry the author’s model, and define them in-line. Do not solve a clarity failure by deleting a necessary source term. Instead, explain it plainly at first use and make its relationship to the argument explicit. Remove or rewrite only labels introduced by the blink when they act as unexplained shorthand, invent a framework, or conceal a missing causal explanation.
+
 ## Big-Picture Writing
 
 For the Big Picture in `overview.md`:
@@ -152,7 +181,7 @@ Before delivery, assess `overview.md` against all five checks:
 4. **Fidelity:** Are the central claims supported by relevant source passages, without invented labels, causal claims, or evaluations?
 5. **Clarity:** Can a smart reader understand the overview in one read, including why the book matters?
 
-## Length And Quizzes
+## Length and assessments
 
 Keep learner-facing summary reading time under 45 minutes. Estimate summary text only, excluding quizzes and review, at 135 words per minute. Record the calculated estimate, rounded to the nearest whole minute, in `metadata.yaml` and `overview.md`; do not add a separate estimate for the full learning experience.
 
@@ -160,17 +189,40 @@ Never ask the user to choose a duration. Estimate the appropriate length from th
 
 If a new version is materially shorter than an existing trusted version, explain the reduction in `_work/final-audit.md` and treat it as a likely regression unless source coverage has demonstrably improved.
 
-Create at most one comprehension question per key idea. Put it in a separate quiz file with the answer hidden in a collapsible `<details>` block. Render every multiple-choice option as a lettered choice (`A.` through `D.`), with a blank line between choices. Bold the letter label only, not the option text. Bold the correct answer letter in the answer block. Do not use bullet points for quiz options. Create optional going-beyond quiz files only when useful, and keep them separate from comprehension checks.
+All knowledge-check responses must be four-option multiple choice. Hide every answer in a collapsible `<details>` block and tell the learner to commit before expanding it. Render options as `A.` through `D.` with a blank line between choices. Bold the letter label only, not the option text. Do not use bullet points for options.
 
-Create `review.md` by default. Repeat all comprehension questions directly in sequence with collapsed answers.
+Design each question as a set, not as a rich correct answer followed by thin distractors. First choose an option family that fits the question: parallel claims or definitions for recall; comparable manager moves, diagnoses, prioritisation choices, or interpretations for applied questions. Then draft all four options before marking the correct answer. Within a question, keep grammar, informational load, qualification, and plausibility comparable. A distractor must not be a bare assertion when the correct answer contains an action, rationale, and condition. Use believable misconceptions, incomplete applications, or wrong trade-offs. Spread correct-answer positions across a quiz and review; do not create a predictable pattern.
+
+Before finalising each question, run a semantic-uniqueness check without looking at the marked answer: state the tested principle, then explain why each distractor fails it. Exactly one option may satisfy the principle. Do not use a synonym, paraphrase, or differently worded version of the correct answer as a distractor. If two options are defensible, redesign the entire option set rather than making a superficial word substitution.
+
+Use expert editorial judgement rather than a fixed wording template. `validate_output.py` reports suspicious option-length imbalance and answer-position concentration as warnings. Review every warning and revise when a learner could identify the answer from length, nuance, or completeness alone; do not pad distractors merely to suppress a warning.
+
+### Application-context workflow
+
+Use this workflow only in the assessment phase of `all` mode or in `assessment` mode. One `application-context.md` file defines exactly one domain.
+
+1. Look for `application-context.md` in the current working folder.
+2. If it exists, identify its domain and ask the user to confirm using that exact file. Show only its path and domain in the confirmation.
+3. If it does not exist, ask the user to provide a file path, attach the file, or say `none` / `no application context` for generic assessment mode. Do not continue until the user responds.
+4. If the user confirms or provides a file, read it completely. It must define exactly one domain and provide the sources and evidence rules needed for contextual assessment. If it does not, stop and ask the user to correct the file; never silently use generic mode instead.
+5. If the user explicitly says `none` or `no application context`, use generic assessment mode.
+
+Use one of these assessment modes after that workflow:
+
+- **Contextual assessment:** Create a fast recall item and a second four-option applied-judgement item for every key idea. Place recall feedback before the applied item. Include `Try this in your <domain> environment` for every key idea: give concrete, compatible actions, not a list from which the learner must choose. Follow the context file’s source and evidence rules. Every `Try this` section must have a verifiable link to the book idea and at least one approved domain source. Cite the relevant book anchor and approved context sources in `## References and evidence basis`; do not invent domain claims. Use five new interleaved review cases for books with five to seven ideas, six for books with eight or more, and one per idea for shorter books.
+- **Generic assessment:** Create two distinct, source-grounded book-recap questions per key idea: a quick recall question and a deeper-comprehension question. Create a new mixed recap review rather than repeating section questions. Do not add applied work scenarios, `Try this` sections, domain claims, domain citations, or an application reference section. Use the same review-question count as contextual assessment.
+
+Do not use blogs, vendor marketing, social posts, generic consultancy material, or secondary summaries as evidence in contextual mode when a primary source is available.
 
 ## Files To Read When Needed
 
 - Read `references/output-templates.md` before writing final learner-facing files.
+- Before writing assessments, follow the Application-context workflow.
 - Use `scripts/requirements.txt` for helper-script dependencies.
 - Use `scripts/source_map.py` for EPUB/PDF source maps and bounded text extraction.
 - Use `scripts/build_source_index.py` to generate the deterministic source-discovery index after source mapping.
 - Use `scripts/validate_source_work.py` to verify that every core or supporting source item has both evidence and a key-idea-plan treatment.
+- Use `scripts/validate_learner_quality.py` to require retained fuller drafts and passing source-blind first-reader reviews before delivery.
 - Use `scripts/extract_visuals.py` for original visual extraction and PNG conversion.
 - Use `scripts/count_reading_time.py` before final delivery.
 - Use `scripts/validate_output.py` before final delivery.
@@ -179,15 +231,14 @@ Create `review.md` by default. Repeat all comprehension questions directly in se
 
 Before responding to the user:
 
-1. Verify `metadata.yaml`, `overview.md`, `review.md`, `quizzes/`, `visuals/`, and `_work/` exist as applicable. Verify `_work/source-index.md`, `_work/source-structure.md`, `_work/source-evidence.md`, `_work/key-idea-plan.md`, and the per-idea argument packs before synthesis.
-2. Run `scripts/count_reading_time.py books/<book-slug> --limit-minutes 45 --wpm 135`. Fail if the learner-facing summary exceeds 45 minutes. Do not treat a shorter result as a success without checking the source-coverage map.
-3. Run `scripts/validate_output.py books/<book-slug>` and fix missing links, missing quiz files, missing previous/next navigation, and missing visual files.
-4. Run `scripts/validate_source_work.py books/<book-slug>` and fix missing evidence notes or plan treatments.
-5. Run Key-Idea Validation and retain the per-idea clarity review in `_work/key-idea-drafts/`. Record completion in `_work/final-audit.md`. Confirm that each learner-facing key idea was tightened from its long draft rather than expanded after a short first pass.
-6. Run Big-Picture Validation and record the result in `_work/final-audit.md`.
-7. Add a source-terminology audit to `_work/final-audit.md`: list every required term from `_work/source-structure.md`, where it appears in learner-facing files, and whether it is defined in-line. Fix missing or mislabeled source terms before delivery.
-8. Run a source-purity audit over learner-facing files.
-9. Run a source-coverage audit against `_work/source-structure.md` and `_work/source-evidence.md`, not only `_work/key-idea-plan.md`. For every `core` or `supporting` item, confirm an evidence note exists and record the exact learner-facing location for `standalone` and `merged` treatments. Reconsider every omission after drafting. Confirm that the key-idea count is source-derived, the learner-facing structure is not a chapter-by-chapter summary, each key idea has one coherent takeaway, and cross-chapter evidence is merged where it serves that takeaway. Do not turn this audit into a reason to add isolated source details after the argument has been drafted.
-10. Run a curriculum-wide form audit. Review all key ideas side by side and ask whether each uses the form that best serves its own argument, or whether a repeated structure has appeared because it was convenient in an earlier idea. Revise forms that reflect a template rather than an independent editorial choice. Do not vary form merely for variation’s sake.
-11. If a user says the summary is untrusted or broadly flawed, regenerate learner-facing files from source notes and source chunks. Do not patch the existing summary as the primary repair.
-12. State any source or extraction limitations plainly.
+1. In `all` or `blink` mode, verify `metadata.yaml`, `overview.md`, `visuals/`, and `_work/` exist. Verify `_work/source-index.md`, `_work/source-structure.md`, `_work/source-evidence.md`, `_work/key-idea-plan.md`, and the per-idea argument packs before synthesis.
+2. In `all` or `blink` mode, run `scripts/count_reading_time.py books/<book-slug> --limit-minutes 45 --wpm 135`. Fail if the learner-facing summary exceeds 45 minutes. Do not treat a shorter result as a success without checking the source-coverage map.
+3. Run `scripts/validate_output.py books/<book-slug> --mode blink` for `blink-only` mode; `--mode all --assessment-mode contextual --context-file <confirmed-context-path>` or `--mode all --assessment-mode generic` for `all` mode; or the equivalent `--mode assessment` command for assessment mode. Review every option-quality warning and perform the semantic-uniqueness check for every question before delivery. Fix only files permitted by the selected mode.
+4. In `all` or `blink` mode, run `scripts/validate_source_work.py books/<book-slug>` and fix missing evidence notes or plan treatments.
+5. In `all` or `blink` mode, run Key-Idea Validation and retain the per-idea clarity review, fuller draft, and passing independent source-blind first-reader review in `_work/key-idea-drafts/`. Run `scripts/validate_learner_quality.py books/<book-slug>`; it must pass. Record the reviewer identity or agent/model, source-blind conditions, and any revisions required by the reviewer in `_work/final-audit.md`. Confirm that each learner-facing key idea was tightened from its retained long draft rather than expanded after a short first pass.
+6. In `all` or `blink` mode, run Big-Picture Validation and record the result in `_work/final-audit.md`.
+7. In `all` or `blink` mode, add a source-terminology audit to `_work/final-audit.md`: list every required term from `_work/source-structure.md`, where it appears in learner-facing files, and whether it is defined in-line. Fix missing or mislabeled source terms before delivery.
+8. In `all` or `blink` mode, run a source-purity audit over learner-facing files and a source-coverage audit against `_work/source-structure.md` and `_work/source-evidence.md`. For every `core` or `supporting` item, confirm an evidence note exists and record the exact learner-facing location for `standalone` and `merged` treatments. Reconsider every omission after drafting. Confirm that the key-idea count is source-derived, the learner-facing structure is not a chapter-by-chapter summary, each key idea has one coherent takeaway, and cross-chapter evidence is merged where it serves that takeaway.
+9. In `all` or `blink` mode, run a curriculum-wide form audit. Review all key ideas side by side and ask whether each uses the form that best serves its own argument, or whether a repeated structure has appeared because it was convenient in an earlier idea. Revise forms that reflect a template rather than an independent editorial choice. Do not vary form merely for variation’s sake.
+10. If a user says the summary is untrusted or broadly flawed, regenerate learner-facing files from source notes and source chunks. Do not patch the existing summary as the primary repair.
+11. State any source or extraction limitations plainly.

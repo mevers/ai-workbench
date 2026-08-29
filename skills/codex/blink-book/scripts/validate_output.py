@@ -7,20 +7,12 @@ import argparse
 import re
 from pathlib import Path
 
+import validate_assessment
 from validate_learner_quality import validate_book_quality
 
 
 LINK_RE = re.compile(r"(?<!!)\[[^\]]+\]\(([^)]+)\)")
 IMAGE_RE = re.compile(r"!\[[^\]]*\]\(([^)]+)\)")
-SOURCE_ID_RE = re.compile(r"^\|\s*([A-Za-z][A-Za-z0-9]*-\d+)\s*\|", re.MULTILINE)
-QUESTION_RE = re.compile(
-    r"^## (?P<heading>Quick recall|Apply|Deeper comprehension|Question \d+)\s*$"
-    r"(?P<body>.*?)(?=^## |\Z)",
-    re.MULTILINE | re.DOTALL,
-)
-OPTION_RE = re.compile(r"^\*\*([A-D])\.\*\*\s+(.+)$", re.MULTILINE)
-ANSWER_RE = re.compile(r"(?:Correct|Best answer):\s*\*\*([A-D])\*\*")
-WORD_RE = re.compile(r"[\w’'-]+")
 
 
 def local_target(base: Path, raw: str) -> Path | None:
@@ -40,129 +32,6 @@ def has_navigation(text: str, index: int, count: int, expects_review: bool) -> b
     if index == count:
         return has_previous and (has_next if expects_review else True)
     return has_previous and has_next
-
-
-def approved_source_ids(context_file: Path, errors: list[str]) -> set[str]:
-    if not context_file.is_file():
-        errors.append(f"Contextual assessment requires an application context file: {context_file}")
-        return set()
-    source_ids = set(SOURCE_ID_RE.findall(context_file.read_text(encoding="utf-8")))
-    if not source_ids:
-        errors.append(f"{context_file}: no approved source IDs found")
-    return source_ids
-
-
-def references_section(text: str) -> str:
-    match = re.search(r"^## References and evidence basis$", text, flags=re.MULTILINE)
-    return text[match.end() :] if match else ""
-
-
-def validate_context_reference(
-    references: str, label: str, source_ids: set[str], path: Path, book_dir: Path, errors: list[str]
-) -> None:
-    match = re.search(rf"^- \*\*{re.escape(label)}:\*\*\s*(.+)$", references, flags=re.MULTILINE)
-    if not match:
-        errors.append(f"{path.relative_to(book_dir)}: missing evidence entry for {label}")
-    elif not any(source_id in match.group(1) for source_id in source_ids):
-        errors.append(f"{path.relative_to(book_dir)}: {label} must cite an approved context-source ID")
-
-
-def review_option_quality(path: Path, book_dir: Path, warnings: list[str]) -> list[str]:
-    answer_letters: list[str] = []
-    text = path.read_text(encoding="utf-8")
-    for match in QUESTION_RE.finditer(text):
-        options = {letter: content for letter, content in OPTION_RE.findall(match.group("body"))}
-        answer = ANSWER_RE.search(match.group("body"))
-        if len(options) != 4 or answer is None:
-            continue
-        correct = answer.group(1)
-        if correct not in options:
-            continue
-        answer_letters.append(correct)
-        lengths = {letter: len(WORD_RE.findall(content)) for letter, content in options.items()}
-        shortest = min(lengths.values())
-        allowed_difference = min(4, max(1, round(shortest * 0.2)))
-        if lengths[correct] > shortest + allowed_difference:
-            warnings.append(
-                f"{path.relative_to(book_dir)}: {match.group('heading')} correct option is "
-                f"{lengths[correct]} words; shortest option is {shortest}. Review for a length or completeness tell."
-            )
-    return answer_letters
-
-
-def warn_on_answer_concentration(answer_letters: list[str], warnings: list[str]) -> None:
-    if len(answer_letters) < 4:
-        return
-    most_common = max(set(answer_letters), key=answer_letters.count)
-    count = answer_letters.count(most_common)
-    if count / len(answer_letters) > 0.5:
-        warnings.append(
-            f"Assessment set: {most_common} is correct in {count} of {len(answer_letters)} questions. "
-            "Review answer-position variety."
-        )
-
-
-def validate_assessment_standard(
-    book_dir: Path, errors: list[str], warnings: list[str], contextual: bool, context_file: Path | None
-) -> None:
-    key_files = sorted(book_dir.glob("key-idea-*.md"))
-    quiz_dir = book_dir / "quizzes"
-    source_ids = approved_source_ids(context_file, errors) if contextual and context_file is not None else set()
-    answer_letters: list[str] = []
-    expected = {f"{path.stem}-comprehension.md" for path in key_files}
-    actual = {path.name for path in quiz_dir.glob("key-idea-*-comprehension.md")} if quiz_dir.exists() else set()
-    for name in sorted(expected - actual):
-        errors.append(f"quizzes: missing assessment file: {name}")
-    for name in sorted(actual - expected):
-        errors.append(f"quizzes: unexpected assessment file: {name}")
-
-    for path in sorted(quiz_dir.glob("key-idea-*-comprehension.md")) if quiz_dir.exists() else []:
-        text = path.read_text(encoding="utf-8")
-        answer_letters.extend(review_option_quality(path, book_dir, warnings))
-        if contextual:
-            for heading in (
-                "## Quick recall",
-                "## Apply",
-                "## Try this in your ",
-                "## References and evidence basis",
-            ):
-                if heading not in text:
-                    errors.append(f"{path.relative_to(book_dir)}: missing contextual assessment section: {heading}")
-            if text.count("<details>") < 2:
-                errors.append(f"{path.relative_to(book_dir)}: expected collapsed answers for recall and apply")
-            if len(re.findall(r"\*\*[A-D]\.\*\*", text)) < 8:
-                errors.append(f"{path.relative_to(book_dir)}: expected two four-option multiple-choice items")
-            if source_ids:
-                references = references_section(text)
-                validate_context_reference(references, "Apply", source_ids, path, book_dir, errors)
-                validate_context_reference(references, "Try this", source_ids, path, book_dir, errors)
-        else:
-            for heading in ("## Quick recall", "## Deeper comprehension"):
-                if heading not in text:
-                    errors.append(f"{path.relative_to(book_dir)}: missing generic assessment section: {heading}")
-            if text.count("<details>") < 2:
-                errors.append(f"{path.relative_to(book_dir)}: expected collapsed answers for two recap questions")
-            if len(re.findall(r"\*\*[A-D]\.\*\*", text)) < 8:
-                errors.append(f"{path.relative_to(book_dir)}: expected two four-option recap items")
-
-    review = book_dir / "review.md"
-    if not review.exists():
-        errors.append("Missing required path: review.md")
-        return
-    text = review.read_text(encoding="utf-8")
-    answer_letters.extend(review_option_quality(review, book_dir, warnings))
-    question_count = len(re.findall(r"^## Question \d+", text, flags=re.MULTILINE))
-    idea_count = len(key_files)
-    expected_count = 5 if 5 <= idea_count <= 7 else 6 if idea_count >= 8 else idea_count
-    if question_count != expected_count:
-        errors.append(f"review.md: expected {expected_count} review questions, found {question_count}")
-    if contextual and "## References and evidence basis" not in text:
-        errors.append("review.md: missing References and evidence basis section")
-    if contextual and source_ids:
-        references = references_section(text)
-        for question in range(1, expected_count + 1):
-            validate_context_reference(references, f"Question {question}", source_ids, review, book_dir, errors)
-    warn_on_answer_concentration(answer_letters, warnings)
 
 
 def validate_links(paths: list[Path], book_dir: Path, errors: list[str]) -> None:
@@ -190,7 +59,7 @@ def main() -> int:
     parser.add_argument(
         "--context-file",
         type=Path,
-        help="Context file whose approved source IDs contextual assessments must cite.",
+        help="Context file whose approved sources contextual assessments may link in learner-facing related ideas.",
     )
     # Backwards-compatible aliases for previous skill versions.
     parser.add_argument("--assessment-standard", action="store_true", help=argparse.SUPPRESS)
@@ -260,6 +129,11 @@ def main() -> int:
         if args.mode == "blink" and ("quizzes/" in overview_text or "review.md" in overview_text):
             errors.append("overview.md: blink mode must omit assessment links")
 
+    if args.mode in ("all", "assessment"):
+        review = book_dir / "review.md"
+        if review.exists() and "overview.md" not in review.read_text(encoding="utf-8"):
+            errors.append("review.md: missing backlink to overview.md")
+
     paths = [overview, *key_files]
     if args.mode in ("all", "assessment"):
         paths.extend([book_dir / "review.md"])
@@ -277,7 +151,9 @@ def main() -> int:
         context_file = None
         if args.assessment_mode == "contextual":
             context_file = (args.context_file or Path.cwd() / "application-context.md").expanduser().resolve()
-        validate_assessment_standard(book_dir, errors, warnings, args.assessment_mode == "contextual", context_file)
+        validate_assessment.validate_assessment_standard(
+            book_dir, errors, warnings, args.assessment_mode == "contextual", context_file
+        )
 
     if errors:
         print("Validation failed:")

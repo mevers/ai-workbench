@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
-"""Validate that each Blink Book key idea has an evidenced first-reader review.
+"""Validate the artefacts for the independent dual-review gate.
 
-The validator deliberately checks for review evidence, not prose style.  Clear
-writing is a human judgement.  The gate therefore requires a source-blind reader
-to document whether a key idea, its unfamiliar examples, and its terminology can
-be understood from the learner-facing prose alone.
+This is deliberately a structural check. It verifies retained drafts and a
+passing source-blind and source-aware review for every learner-facing file; it
+does not assess prose quality or overrule either independent reviewer.
 """
 
 from __future__ import annotations
@@ -48,71 +47,41 @@ def substantive(value: str | None) -> bool:
     return bool(value and value.lower() not in {"none", "n/a", "tbd", "todo"})
 
 
-def validate_key_idea(path: Path, errors: list[str]) -> None:
-    body = learner_body(path.read_text(encoding="utf-8"))
-    draft_dir = path.parent / "_work" / "key-idea-drafts"
-    draft_path = draft_dir / f"{path.stem}-full-draft.md"
-    review_path = draft_dir / f"{path.stem}-first-reader-review.md"
-    if not draft_path.is_file():
-        errors.append(f"{path.name}: missing retained fuller draft: {draft_path.relative_to(path.parent)}")
+def validate_review(review_path: Path, review_kind: str, errors: list[str]) -> None:
     if not review_path.is_file():
-        errors.append(f"{path.name}: missing source-blind first-reader review: {review_path.relative_to(path.parent)}")
+        errors.append(f"missing {review_kind} review: {review_path}")
         return
-
     review = review_path.read_text(encoding="utf-8")
-    for heading in ("Review conditions", "Reader reconstruction", "Unfamiliar names and case examples", "Terms and labels", "Gate decision"):
+    required = ("Review conditions", "Reader reconstruction", "Concerns and required repairs", "Most vulnerable passage", "Gate decision")
+    for heading in required:
         if section(review, heading) is None:
             errors.append(f"{review_path.name}: missing required section: {heading}")
-
-    conditions = section(review, "Review conditions")
-    if conditions is not None:
-        for phrase in ("source-blind", "final learner-facing"):
-            if phrase not in conditions.lower():
-                errors.append(f"{review_path.name}: Review conditions must state that review was {phrase}")
-        if not substantive(field(conditions, "Reviewer")):
-            errors.append(f"{review_path.name}: Review conditions must identify the reviewer")
-        if (field(conditions, "Writer and reviewer are different") or "").strip().lower() != "yes":
-            errors.append(f"{review_path.name}: the writer may not approve their own prose")
-
+    if review_kind == "source-aware" and section(review, "Source terminology and fidelity") is None:
+        errors.append(f"{review_path.name}: source-aware review is missing Source terminology and fidelity")
+    if review_kind not in review.lower():
+        errors.append(f"{review_path.name}: review record must identify it as {review_kind}")
     reconstruction = section(review, "Reader reconstruction")
-    if reconstruction is not None:
-        for label in ("Central conclusion", "Key mechanism", "Action or implication"):
-            if not substantive(field(reconstruction, label)):
-                errors.append(f"{review_path.name}: Reader reconstruction is missing a substantive '{label}' answer")
-        if field(reconstruction, "Unresolved confusion") is None:
-            errors.append(f"{review_path.name}: Reader reconstruction is missing an 'Unresolved confusion' answer")
-
-    named_section = section(review, "Unfamiliar names and case examples")
-    if named_section is not None:
-        named_records = records(named_section)
-        names = sorted({name.strip() for name in ITALIC_RE.findall(body) if len(name.split()) <= 8})
-        for name in names:
-            record = named_records.get(name)
-            if record is None:
-                errors.append(f"{review_path.name}: unfamiliar italicised reference '{name}' has no first-reader review")
-                continue
-            for label in ("What is it", "What happens", "Why it matters here", "Verdict"):
-                if not substantive(field(record, label)):
-                    errors.append(f"{review_path.name}: {name} is missing a substantive '{label}' answer")
-            evidence = field(record, "Final-prose evidence")
-            if not substantive(evidence) or normalise(evidence) not in normalise(body):
-                errors.append(f"{review_path.name}: {name} must quote the final prose that supplies its context")
-            if (field(record, "Verdict") or "").strip().upper() != "PASS":
-                errors.append(f"{review_path.name}: {name} did not pass the first-reader case-context check")
-
-    terms = section(review, "Terms and labels")
-    if terms is not None:
-        for label in ("Source-defined terms retained", "Non-source labels removed or rewritten"):
-            if not substantive(field(terms, label)):
-                errors.append(f"{review_path.name}: Terms and labels is missing '{label}'")
-
+    if reconstruction is None or not reconstruction.strip():
+        errors.append(f"{review_path.name}: Reader reconstruction must be substantive")
     decision = section(review, "Gate decision")
     if decision is None or not re.search(r"^Decision:\s*PASS\b", decision, re.MULTILINE):
         errors.append(f"{review_path.name}: Gate decision must explicitly be 'Decision: PASS'")
 
 
+def validate_key_idea(path: Path, errors: list[str]) -> None:
+    draft_dir = path.parent / "_work" / "key-idea-drafts"
+    draft_path = draft_dir / f"{path.stem}-full-draft.md"
+    if not draft_path.is_file():
+        errors.append(f"{path.name}: missing retained fuller draft: {draft_path.relative_to(path.parent)}")
+    validate_review(draft_dir / f"{path.stem}-source-blind-review.md", "source-blind", errors)
+    validate_review(draft_dir / f"{path.stem}-source-aware-review.md", "source-aware", errors)
+
+
 def validate_book_quality(book_dir: Path) -> list[str]:
     errors: list[str] = []
+    review_dir = book_dir / "_work" / "final-reviews"
+    validate_review(review_dir / "overview-source-blind-review.md", "source-blind", errors)
+    validate_review(review_dir / "overview-source-aware-review.md", "source-aware", errors)
     for path in sorted(book_dir.glob("key-idea-*.md")):
         validate_key_idea(path, errors)
     return errors
@@ -127,7 +96,7 @@ def main() -> int:
         print("Learner-quality validation failed:")
         print("\n".join(f"- {error}" for error in errors))
         return 1
-    print("OK: every key idea has a retained fuller draft and a passing source-blind first-reader review.")
+    print("OK: overview and every key idea have passing independent source-blind and source-aware reviews.")
     return 0
 
 

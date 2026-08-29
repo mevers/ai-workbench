@@ -147,18 +147,23 @@ Decision: PASS
 
 Do not use `PASS` when the reviewer had to rely on prior knowledge, a visual, or source material to fill a gap. A source-defined technical term may remain when it carries the book’s model and is explained in-line. The gate targets unexplained references and blink-invented shorthand, not useful domain vocabulary.
 
-## Contextual assessment
+## Assessment template index
 
-For every multiple-choice item, choose one option family and write four parallel options before marking the correct answer. Keep their grammar and informational load comparable; do not make the correct option the only complete plan or qualified statement. Ensure exactly one option satisfies the tested principle; distractors must not paraphrase the correct answer.
+Read `references/assessment-workflow.md` and `references/assessment-review.md` before using these schemas.
 
-```markdown
-# Key idea N: Recall and apply
+- Contextual `FULL`: Quick recall, Apply, Try this, and related ideas.
+- Contextual `RECAP_ONLY`: Quick recall, Deeper comprehension, and related ideas.
+- Generic: Quick recall and Deeper comprehension only.
+- Internal records: one assessment plan and two independent review records.
 
-Commit to each answer before expanding its answer block.
+## Knowledge-question syntax
 
-## Quick recall
+Use this syntax for Quick recall, Apply, Deeper comprehension, and review questions:
 
-<One four-option multiple-choice item that checks the central distinction, mechanism, or principle.>
+```md
+<Question that makes sense without reading the options>
+
+<Select one answer. OR Select all that apply.>
 
 **A.** <Option>
 
@@ -171,170 +176,227 @@ Commit to each answer before expanding its answer block.
 <details>
 <summary>Answer</summary>
 
-Correct: **<Letter>**
+Correct answer: **<letter>**
 
-<Brief explanation tied to the source idea.>
+<Plain explanation of the relevant book concept and why the options differ. For multi-select, use `Correct answers: **<letters>**` and explain A-D separately.>
 
 </details>
+```
+
+## Contextual assessment: FULL
+
+```md
+# Key idea N: Recall and apply
+
+[← Back to key idea](../key-idea-NN.md)
+
+Commit to each answer before expanding its answer block.
+
+## Quick recall
+
+<Book-only question using the knowledge-question syntax>
 
 ## Apply
 
-<A novel four-option scenario in the configured application context. Test a decision, diagnosis, or tradeoff, not a restated definition. Make every option a comparable manager move, diagnosis, prioritisation choice, or interpretation.>
-
-**A.** <Option>
-
-**B.** <Option>
-
-**C.** <Option>
-
-**D.** <Option>
-
-<details>
-<summary>Answer</summary>
-
-Best answer: **<Letter>**
-
-<A short coaching explanation: the decisive contextual clue, why the answer fits, and the most instructive tempting alternative(s).>
-
-</details>
+<Context-grounded question using the knowledge-question syntax>
 
 ## Try this in your <domain> environment
 
-<Give all compatible actions the learner should take. Do not present alternatives from which they must choose.>
+**When:** <Recognisable trigger established by the application context>
 
-**Outcome:** <The management result these actions intend to create.>
+**Do:** <One observable action; no required open response>
 
-**Start:** <The next appropriate work touchpoint.>
+**Why now:** <Useful result in the current situation>
 
-- <Concrete, compatible action.>
-- <Concrete, compatible action.>
-- <Concrete, compatible action when useful.>
+## Related ideas and further reading
 
-**Review:** <Where and when to inspect what happened.>
+### In other Blinks
 
-## References and evidence basis
+- [<Blink title>](<direct link>): <specific connection>
 
-- **Quick recall:** <Book chapter, section, figure, table, or page range.>
-- **Apply:** <Book chapter, section, figure, table, or page range>; <Registered context-source ID, relevant section>. <Verification note.>
-- **Try this:** <Book chapter, section, figure, table, or page range>; <Registered context-source ID, relevant section>. <Verification note.>
+### Research and practice
 
-[Back to Key Idea N](../key-idea-NN.md)
+- [<Source title>](<approved direct URL>): <specific connection>
 ```
 
-## Contextual review
+## Contextual assessment: RECAP_ONLY
 
-```markdown
-# End-of-book review
+Use the same question syntax as `FULL`.
 
-Estimated time: <N> minutes
-
-## Question 1
-
-<A new four-option, applied case that draws on two or three key ideas. Do not repeat a section question.>
-
-**A.** <Option>
-
-**B.** <Option>
-
-**C.** <Option>
-
-**D.** <Option>
-
-<details>
-<summary>Answer</summary>
-
-Correct: **<Letter>**
-
-<Natural coaching explanation that identifies the relevant book ideas and the contextual clue.>
-
-</details>
-
-...
-
-## References and evidence basis
-
-- **Question 1:** <Book chapters, sections, figures, tables, or page ranges>; <Registered context-source ID, relevant section>. <Verification note.>
-```
-
-## Generic assessment
-
-For every multiple-choice item, choose one option family and write four parallel options before marking the correct answer. Keep their grammar and informational load comparable; do not make the correct option the only complete or qualified statement. Ensure exactly one option satisfies the tested principle; distractors must not paraphrase the correct answer.
-
-```markdown
+```md
 # Key idea N: Recall and deepen
+
+[← Back to key idea](../key-idea-NN.md)
 
 Commit to each answer before expanding its answer block.
 
 ## Quick recall
 
-<One four-option multiple-choice question that checks the central distinction, mechanism, or principle from the book.>
-
-**A.** <Option>
-
-**B.** <Option>
-
-**C.** <Option>
-
-**D.** <Option>
-
-<details>
-<summary>Answer</summary>
-
-Correct: **<Letter>**
-
-<Brief explanation tied to the book source.>
-
-</details>
+<Book-only retrieval question and collapsed answer>
 
 ## Deeper comprehension
 
-<A second, distinct four-option book-recap question. Test a mechanism, distinction, implication, or trade-off from the book without introducing an application context.>
+<Different source-grounded question and collapsed answer>
 
-**A.** <Option>
+## Related ideas and further reading
 
-**B.** <Option>
-
-**C.** <Option>
-
-**D.** <Option>
-
-<details>
-<summary>Answer</summary>
-
-Correct: **<Letter>**
-
-<Brief explanation tied to the book source.>
-
-</details>
-
-[Back to key idea N](../key-idea-NN.md)
+<Context-approved links only; do not imply contextual practice occurred.>
 ```
 
-## Generic review
+## End-of-book review
 
-```markdown
+```md
 # End-of-book review
 
-Estimated time: <N> minutes
+Review the book's ideas in new questions.
+
+Commit to each answer before expanding its answer block.
 
 ## Question 1
 
-<A new, mixed four-option book-recap question. Do not repeat a section question or introduce an application context. Use five questions for books with five to seven ideas, six for books with eight or more, and one per idea for shorter books.>
+<New contextual or source-grounded recap question using the knowledge-question syntax>
 
-**A.** <Option>
+<Repeat for the required number of questions.>
 
-**B.** <Option>
+## Related ideas and further reading
 
-**C.** <Option>
+<Context-approved links and clear connections; omit in generic mode.>
 
-**D.** <Option>
+[← Back to overview](overview.md)
+```
 
-<details>
-<summary>Answer</summary>
+## Generic assessment and review
 
-Correct: **<Letter>**
+Use the `RECAP_ONLY` learner-facing structure without related-ideas sections or domain language. Every quiz contains Quick recall and Deeper comprehension. The mixed review contains new source-grounded recap questions and ends with `[← Back to overview](overview.md)`.
 
-<Brief explanation tied to the relevant book ideas.>
+## Assessment plan
 
-</details>
+Path: `_work/assessment-plan.md`
+
+```md
+# Assessment plan
+
+**Assessment mode:** <CONTEXTUAL | GENERIC>
+**Context path:** <confirmed path or `None.`>
+**Context SHA-256:** <digest or `None.`>
+
+## Key idea 1
+
+**Route:** <FULL | RECAP_ONLY>
+**Route reason:** <source- and context-based reason>
+
+### Quick recall
+
+**Source mechanism:** <one tested mechanism>
+**Source anchor:** <exact source anchor>
+**Intended learner judgement:** <one retrieval judgement>
+**Answer mode:** <ONE_BEST | SELECT_ALL>
+**Correct answers:** <letter or comma-separated letters>
+**Option rationales:** <concise A-D support or error rationales>
+**Context excerpt:** None.
+**Proposed situation or practice:** None.
+**Apply/Try-this distinction:** None.
+**Rejection risk:** <one concrete risk>
+
+### Apply
+
+<For `FULL`, repeat the fields above. Quote one exact `Context excerpt`, describe the proposed situation in one literal sentence, and state how Apply differs from Try this.>
+
+### Try this
+
+**Source mechanism:** <mechanism being practised>
+**Source anchor:** <exact source anchor>
+**Intended learner action:** <one observable action>
+**Answer mode:** N/A.
+**Correct answers:** N/A.
+**Option rationales:** N/A.
+**Context excerpt:** <one exact excerpt from application-context.md>
+**Proposed situation or practice:** <When / Do / Why now in one literal sentence>
+**Apply/Try-this distinction:** <judgement versus guided action>
+**Rejection risk:** <one concrete risk>
+
+<For `RECAP_ONLY`, replace Apply and Try this with `### Deeper comprehension`, using the question fields and `None.` for the three context-related fields.>
+
+## Review question 1
+
+**Source mechanism:** <tested mechanism or linked mechanisms>
+**Source anchor:** <exact source anchor>
+**Intended learner judgement:** <one judgement>
+**Answer mode:** <ONE_BEST | SELECT_ALL>
+**Correct answers:** <letter or comma-separated letters>
+**Option rationales:** <concise A-D support or error rationales>
+**Context excerpt:** <exact excerpt for a contextual question, otherwise `None.`>
+**Proposed situation or practice:** <one literal sentence, otherwise `None.`>
+**Apply/Try-this distinction:** None.
+**Rejection risk:** <one concrete risk>
+
+<Repeat for every key idea and review question.>
+
+Plan status: FROZEN
+```
+
+## Source-aware review record
+
+Path: `_work/assessment-reviews/source-aware-review.md`
+
+```md
+# Source-aware assessment review
+
+**Reviewer ID:** <identity distinct from writer and other reviewer>
+**Writer and reviewer are different:** yes
+**Review round:** <integer>
+**No writer rationale, prior findings, or expected decisions supplied:** yes
+**Plan SHA-256:** <current plan digest>
+**Assessment bundle SHA-256:** <current bundle digest>
+
+## File decisions
+
+### quizzes/key-idea-NN-comprehension.md
+
+**Most vulnerable item:** <item and exact rejection risk>
+**Source, route, and context validity:** <evidence>
+**Answer and explanation validity:** <evidence>
+**Concerns and required repairs:** None.
+
+### review.md
+
+<Repeat the fields above.>
+
+## Gate decision
+
+Decision: PASS
+```
+
+## Context, language, and practice review record
+
+Path: `_work/assessment-reviews/context-language-review.md`
+
+```md
+# Context, language, and practice review
+
+**Reviewer ID:** <identity distinct from writer and other reviewer>
+**Writer and reviewer are different:** yes
+**Review round:** <integer>
+**Source, plan, answer keys, prior findings, and expected decisions withheld:** yes
+**Context SHA-256:** <current context digest or `None.`>
+**Assessment bundle SHA-256:** <current bundle digest>
+
+## File decisions
+
+### quizzes/key-idea-NN-comprehension.md
+
+**Literal reconstruction:** <what the exact words establish>
+**Context and behavioural reality:** <evidence, or `Not applicable` in generic mode>
+**Plain language and option neutrality:** <evidence>
+**Try-this usefulness:** <present value, or `Not applicable`>
+**Most vulnerable phrase:** <exact phrase and why it passes>
+**Concerns and required repairs:** None.
+
+### review.md
+
+<Repeat the fields above.>
+
+## Gate decision
+
+Decision: PASS
 ```

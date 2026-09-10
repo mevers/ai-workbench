@@ -7,12 +7,54 @@ import argparse
 import re
 from pathlib import Path
 
+import yaml
+
 import validate_assessment
 from validate_learner_quality import validate_book_quality
 
 
 LINK_RE = re.compile(r"(?<!!)\[[^\]]+\]\(([^)]+)\)")
 IMAGE_RE = re.compile(r"!\[[^\]]*\]\(([^)]+)\)")
+SEMVER_RE = re.compile(r"^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$")
+OVERVIEW_VERSION_RE = re.compile(r"^Summary generated with Blink skill version:\s*(\S+)\s*$", re.MULTILINE)
+
+
+def validate_version_provenance(
+    book_dir: Path, overview_text: str, mode: str, errors: list[str]
+) -> None:
+    metadata_path = book_dir / "metadata.yaml"
+    if not metadata_path.exists():
+        return
+
+    try:
+        metadata = yaml.safe_load(metadata_path.read_text(encoding="utf-8"))
+    except yaml.YAMLError as exc:
+        errors.append(f"metadata.yaml: invalid YAML: {exc}")
+        return
+
+    if not isinstance(metadata, dict):
+        errors.append("metadata.yaml: expected a YAML mapping")
+        return
+
+    metadata_version = metadata.get("blink_skill_version")
+    overview_versions = OVERVIEW_VERSION_RE.findall(overview_text)
+    version_required = mode in ("all", "blink")
+
+    if not version_required and metadata_version is None and not overview_versions:
+        return
+
+    if not isinstance(metadata_version, str) or not SEMVER_RE.fullmatch(metadata_version):
+        errors.append("metadata.yaml: blink_skill_version must use quoted MAJOR.MINOR.PATCH format")
+
+    if len(overview_versions) != 1:
+        errors.append("overview.md: expected exactly one Summary generated with Blink skill version: MAJOR.MINOR.PATCH line")
+        return
+
+    overview_version = overview_versions[0]
+    if not SEMVER_RE.fullmatch(overview_version):
+        errors.append("overview.md: Blink skill version must use MAJOR.MINOR.PATCH format")
+    if isinstance(metadata_version, str) and overview_version != metadata_version:
+        errors.append("Blink skill version differs between metadata.yaml and overview.md")
 
 
 def local_target(base: Path, raw: str) -> Path | None:
@@ -119,6 +161,7 @@ def main() -> int:
             errors.append(f"{path.name}: blink mode must omit assessment links")
 
     overview = book_dir / "overview.md"
+    overview_text = ""
     if overview.exists():
         overview_text = overview.read_text(encoding="utf-8")
         for path in key_files:
@@ -128,6 +171,8 @@ def main() -> int:
             errors.append("overview.md: missing review.md link")
         if args.mode == "blink" and ("quizzes/" in overview_text or "review.md" in overview_text):
             errors.append("overview.md: blink mode must omit assessment links")
+
+    validate_version_provenance(book_dir, overview_text, args.mode, errors)
 
     if args.mode in ("all", "assessment"):
         review = book_dir / "review.md"

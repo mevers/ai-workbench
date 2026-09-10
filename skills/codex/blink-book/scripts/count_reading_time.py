@@ -9,8 +9,8 @@ import sys
 from pathlib import Path
 
 
-DEFAULT_WPM = 225
-DEFAULT_LIMIT_MINUTES = 60
+DEFAULT_WPM = 135
+DEFAULT_LIMIT_MINUTES = 45
 
 
 def strip_markdown_noise(text: str) -> str:

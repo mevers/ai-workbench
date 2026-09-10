@@ -27,7 +27,7 @@ For every question and practice, verify:
 - explanations correctly connect every answer to the book concept; and
 - review questions are new and source-grounded.
 
-Record the result in `_work/assessment-reviews/source-aware-review.md` using the compact template. Identify the most vulnerable item in each assessment file. Use `Decision: PASS` only when no concern remains.
+Record the result in `_work/assessment-reviews/source-aware-review.md` using the compact template. Identify the most vulnerable item in each assessment file and classify every finding by severity.
 
 ## Reviewer 2: Context, language, and practice review
 
@@ -47,9 +47,15 @@ For every item, test the exact learner-facing words:
 - Does the explanation clarify the options without supplying missing question facts?
 - Is Try this a useful action now in a familiar, context-supported moment?
 
-For every file, quote the most vulnerable phrase and state what its exact words establish. If the reviewer must produce a charitable paraphrase that adds a fact or motivation, the file fails. Record the result in `_work/assessment-reviews/context-language-review.md`. Use `Decision: PASS` only when no concern remains.
+For every file, quote the most vulnerable phrase and state what its exact words establish. If the reviewer must produce a charitable paraphrase that adds a fact or motivation, record a blocker. Record the result in `_work/assessment-reviews/context-language-review.md` and classify every finding by severity.
 
-## Independence and repair
+## Finding severity
+
+A `BLOCKER` is a defect that makes an item invalid or materially misleading: unsupported source or context, an incorrect or non-unique answer, invented situational facts, missing facts needed to answer, an unusable practice, material ambiguity, or an explanation that cannot justify the keyed answer. An `ADVISORY` is a non-material wording or polish suggestion that does not change validity, understanding, or learner action.
+
+Only blockers fail a review or authorise repair. Use `Decision: PASS` when `## Blockers` contains exactly `None.` or `None`; advisories may remain with PASS.
+
+## Independence and invalidation
 
 The writer and the two reviewers must be different, and the reviewers must be different from each other. Reviewers may not edit files during their first pass.
 
@@ -59,7 +65,14 @@ After a repair:
 - a plan-only change invalidates the source-aware review;
 - an application-context change invalidates both reviews and every contextual plan entry.
 
-Rerun affected reviews on the complete current artefacts. A PASS attached to an earlier digest is stale.
+Rerun affected reviews on the complete current artefacts within the bounded process below. A PASS attached to an earlier digest is stale.
+
+## Bounded review and repair
+
+1. Run up to three fresh concurrent paired review rounds on the complete current assessment bundle without prior findings.
+2. After a failed round, the writer makes one consolidated, substantive repair of all blockers before the next round; do not repair advisories or use piecemeal micro-iterations.
+3. If either reviewer reports a blocker in round 3, stop with the assessment incomplete.
+4. Obey the skill's 60-minute total invocation budget. At the limit, stop incomplete rather than weakening a gate or continuing review.
 
 ## Deterministic validation
 
@@ -73,4 +86,4 @@ When changing this subsystem, run `scripts/test_validate_assessment.py` and cond
 
 ## Release
 
-Do not describe an assessment as reviewed or complete until both semantic reviews and deterministic validation pass on the same learner-facing assessment bundle. State assessment evidence modestly: retrieval, constrained judgement, and guided practice do not establish mastery or durable transfer.
+Do not describe an assessment as reviewed or complete until both semantic reviews contain no blockers and deterministic validation passes on the same learner-facing assessment bundle within the three-round cap. State assessment evidence modestly: retrieval, constrained judgement, and guided practice do not establish mastery or durable transfer.

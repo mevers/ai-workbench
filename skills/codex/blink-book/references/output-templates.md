@@ -17,6 +17,7 @@ key_idea_count: <source-derived count>
 estimated_reading_minutes: 42
 generated_date: "YYYY-MM-DD"
 language: "English"
+blink_skill_version: "<current SKILL.md metadata.version>"
 ```
 
 ## overview.md in all mode
@@ -27,6 +28,8 @@ language: "English"
 By <Author>
 
 Estimated reading time: <N> minutes
+
+Summary generated with Blink skill version: <same value as metadata.yaml>
 
 ## Big picture
 
@@ -95,58 +98,6 @@ For the first key idea, omit `Previous`. For the final key idea, use `Next: [End
 
 Use the all-mode key-idea template but omit `## Check understanding` and its link. For the final key idea, omit `Next` rather than linking to a review. Do not change key-idea files in assessment mode.
 
-## `_work/key-idea-drafts/key-idea-NN-first-reader-review.md`
-
-This is a working-quality artefact, not learner-facing text. An independent reviewer receives only the final `key-idea-NN.md` file. They must not see the book, source extracts, outline, argument pack, or fuller draft.
-
-```markdown
-# Source-blind first-reader review: Key idea N
-
-## Review conditions
-
-**Reviewer:** <human name or separate agent/model>
-
-**Writer and reviewer are different:** yes
-
-The reviewer was source-blind and reviewed the final learner-facing key-idea file only.
-
-## Reader reconstruction
-
-**Central conclusion:** <What the reader understood the takeaway to be.>
-
-**Key mechanism:** <How the reader understood the claim to work.>
-
-**Action or implication:** <What the reader understood they should do or notice.>
-
-**Unresolved confusion:** <none, or the precise unresolved question.>
-
-## Unfamiliar names and case examples
-
-### <Name of case, person, place, event, or organisation>
-
-**What is it:** <Identity and setting needed to understand the reference.>
-
-**What happens:** <Relevant decision, event, and outcome.>
-
-**Why it matters here:** <How it supports this key idea.>
-
-**Final-prose evidence:** <Exact final prose that supplies the needed context.>
-
-**Verdict:** PASS
-
-## Terms and labels
-
-**Source-defined terms retained:** <Named book terms, their plain in-line explanation, and why they are needed.>
-
-**Non-source labels removed or rewritten:** <What was changed, or none.>
-
-## Gate decision
-
-Decision: PASS
-```
-
-Do not use `PASS` when the reviewer had to rely on prior knowledge, a visual, or source material to fill a gap. A source-defined technical term may remain when it carries the book’s model and is explained in-line. The gate targets unexplained references and blink-invented shorthand, not useful domain vocabulary.
-
 ## Assessment template index
 
 Read `references/assessment-workflow.md` and `references/assessment-review.md` before using these schemas.
@@ -212,7 +163,7 @@ Commit to each answer before expanding its answer block.
 
 ### In other Blinks
 
-- [<Blink title>](<direct link>): <specific connection>
+- *<Source book title>*: [<Related key idea title>](<direct link>). <Specific connection>
 
 ### Research and practice
 
@@ -344,7 +295,7 @@ Path: `_work/assessment-reviews/source-aware-review.md`
 
 **Reviewer ID:** <identity distinct from writer and other reviewer>
 **Writer and reviewer are different:** yes
-**Review round:** <integer>
+**Review wave:** <1 | 2 | 3>
 **No writer rationale, prior findings, or expected decisions supplied:** yes
 **Plan SHA-256:** <current plan digest>
 **Assessment bundle SHA-256:** <current bundle digest>
@@ -356,11 +307,19 @@ Path: `_work/assessment-reviews/source-aware-review.md`
 **Most vulnerable item:** <item and exact rejection risk>
 **Source, route, and context validity:** <evidence>
 **Answer and explanation validity:** <evidence>
-**Concerns and required repairs:** None.
+**Findings:** <BLOCKER or ADVISORY with evidence, or `None.`>
 
 ### review.md
 
 <Repeat the fields above.>
+
+## Blockers
+
+None.
+
+## Advisories
+
+None.
 
 ## Gate decision
 
@@ -376,7 +335,7 @@ Path: `_work/assessment-reviews/context-language-review.md`
 
 **Reviewer ID:** <identity distinct from writer and other reviewer>
 **Writer and reviewer are different:** yes
-**Review round:** <integer>
+**Review wave:** <1 | 2 | 3>
 **Source, plan, answer keys, prior findings, and expected decisions withheld:** yes
 **Context SHA-256:** <current context digest or `None.`>
 **Assessment bundle SHA-256:** <current bundle digest>
@@ -390,11 +349,19 @@ Path: `_work/assessment-reviews/context-language-review.md`
 **Plain language and option neutrality:** <evidence>
 **Try-this usefulness:** <present value, or `Not applicable`>
 **Most vulnerable phrase:** <exact phrase and why it passes>
-**Concerns and required repairs:** None.
+**Findings:** <BLOCKER or ADVISORY with evidence, or `None.`>
 
 ### review.md
 
 <Repeat the fields above.>
+
+## Blockers
+
+None.
+
+## Advisories
+
+None.
 
 ## Gate decision
 

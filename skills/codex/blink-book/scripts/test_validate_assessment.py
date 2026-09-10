@@ -75,7 +75,6 @@ def create_book(root: Path, contextual: bool) -> tuple[Path, Path]:
         "# Key idea 1\n\n## Source basis\n\nFixture source.\n\n[Back to overview](overview.md)\n",
         encoding="utf-8",
     )
-
     context = root / "application-context.md"
     excerpt = "Managers review an analyst's written report before a recommendation is shared."
     context.write_text(f"# Application context\n\n{excerpt}\n\nhttps://example.com/research\n", encoding="utf-8")
@@ -214,22 +213,33 @@ def refresh_reviews(book: Path, context: Path | None, same_reviewer: bool = Fals
     context_digest = sha256(context) if context else "None."
     decisions = """### quizzes/key-idea-01-comprehension.md
 
-**Concerns and required repairs:** None.
+**Findings:** None.
 
 ### review.md
 
-**Concerns and required repairs:** None."""
+**Findings:** None."""
     (book / "_work" / "assessment-reviews" / "source-aware-review.md").write_text(
         f"""# Source-aware assessment review
 
 **Reviewer ID:** source-reviewer
 **Writer and reviewer are different:** yes
+**Review wave:** 1
 **Plan SHA-256:** {plan_digest}
 **Assessment bundle SHA-256:** {digest}
 
 ## File decisions
 
 {decisions}
+
+## Blockers
+
+None.
+
+## Advisories
+
+None.
+
+## Gate decision
 
 Decision: PASS
 """,
@@ -241,12 +251,23 @@ Decision: PASS
 
 **Reviewer ID:** {language_id}
 **Writer and reviewer are different:** yes
+**Review wave:** 1
 **Context SHA-256:** {context_digest}
 **Assessment bundle SHA-256:** {digest}
 
 ## File decisions
 
 {decisions}
+
+## Blockers
+
+None.
+
+## Advisories
+
+None.
+
+## Gate decision
 
 Decision: PASS
 """,
@@ -286,6 +307,20 @@ def main() -> int:
         generic, _ = create_book(root / "generic", False)
         if (result := run(generic, None)).returncode:
             raise AssertionError(f"Generic positive case failed:\n{result.stdout}")
+
+        case = root / "pass-with-advisory"
+        shutil.copytree(contextual.parent.parent, case)
+        case_book = case / "books" / "fixture-book"
+        review = case_book / "_work" / "assessment-reviews" / "source-aware-review.md"
+        review.write_text(
+            review.read_text().replace(
+                "## Advisories\n\nNone.",
+                "## Advisories\n\nADVISORY: One optional explanation could be shorter.",
+            ),
+            encoding="utf-8",
+        )
+        if (result := run(case_book, case / "application-context.md")).returncode:
+            raise AssertionError(f"PASS with an advisory should remain valid:\n{result.stdout}")
 
         case = root / "missing-plan"
         shutil.copytree(contextual.parent.parent, case)
@@ -328,6 +363,26 @@ def main() -> int:
         case_book = case / "books" / "fixture-book"
         refresh_reviews(case_book, case / "application-context.md", same_reviewer=True)
         require_failure(run(case_book, case / "application-context.md"), "reviewers must have distinct Reviewer IDs")
+
+        case = root / "invalid-review-wave"
+        shutil.copytree(contextual.parent.parent, case)
+        case_book = case / "books" / "fixture-book"
+        review = case_book / "_work" / "assessment-reviews" / "source-aware-review.md"
+        review.write_text(review.read_text().replace("**Review wave:** 1", "**Review wave:** 4"), encoding="utf-8")
+        require_failure(run(case_book, case / "application-context.md"), "Review wave must be 1, 2, or 3")
+
+        case = root / "pass-with-blocker"
+        shutil.copytree(contextual.parent.parent, case)
+        case_book = case / "books" / "fixture-book"
+        review = case_book / "_work" / "assessment-reviews" / "source-aware-review.md"
+        review.write_text(
+            review.read_text().replace(
+                "## Blockers\n\nNone.",
+                "## Blockers\n\nBLOCKER: The keyed answer is unsupported.",
+            ),
+            encoding="utf-8",
+        )
+        require_failure(run(case_book, case / "application-context.md"), "PASS review must record `None.` under Blockers")
 
         case = root / "obsolete-artifact"
         shutil.copytree(contextual.parent.parent, case)

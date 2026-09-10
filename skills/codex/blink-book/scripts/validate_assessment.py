@@ -46,6 +46,15 @@ def field_value(text: str, label: str) -> str | None:
     return match.group(1).strip() if match else None
 
 
+def markdown_section(text: str, heading: str) -> str | None:
+    match = re.search(
+        rf"^## {re.escape(heading)}\s*$\n(?P<body>.*?)(?=^## |\Z)",
+        text,
+        flags=re.MULTILINE | re.DOTALL,
+    )
+    return match.group("body") if match else None
+
+
 def substantive(value: str | None) -> bool:
     return bool(value and value not in {"None.", "N/A.", "<none>"} and not value.startswith("<"))
 
@@ -282,10 +291,20 @@ def validate_review_record(
         errors.append(f"{label}: Reviewer ID is missing")
     if field_value(text, "**Writer and reviewer are different:**") != "yes":
         errors.append(f"{label}: writer/reviewer independence is not confirmed")
+    review_wave = field_value(text, "**Review wave:**")
+    if review_wave not in {"1", "2", "3"}:
+        errors.append(f"{label}: Review wave must be 1, 2, or 3")
     if field_value(text, "**Assessment bundle SHA-256:**") != bundle_digest:
         errors.append(f"{label}: stale review; assessment bundle digest does not match")
+    blockers = markdown_section(text, "Blockers")
+    if blockers is None:
+        errors.append(f"{label}: missing required section: Blockers")
+    if markdown_section(text, "Advisories") is None:
+        errors.append(f"{label}: missing required section: Advisories")
     if not re.search(r"^Decision:\s+PASS\s*$", text, flags=re.MULTILINE):
         errors.append(f"{label}: final Decision must be PASS")
+    elif blockers is None or blockers.strip() not in {"None.", "None"}:
+        errors.append(f"{label}: PASS review must record `None.` under Blockers")
     for assessment in assessment_paths:
         heading = f"### {assessment.relative_to(book_dir).as_posix()}"
         if heading not in text:

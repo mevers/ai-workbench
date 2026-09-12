@@ -13,6 +13,9 @@ Reusable AI skills, prompts, workflows, scripts, and templates shared across too
 
 ## Current skills
 
+- `skills/codex/blink-book`: Create Blinkist-style learning curricula from nonfiction books, with source-based key ideas, original visuals, and comprehension checks; also supports summary-only and assessment-only modes.
+- `skills/codex/comment-python-code`: Add concise comments to Python files or snippets without changing executable code or adding docstrings.
+- `skills/codex/management-coach`: Sam, your personal management coach for data science leadership, explicitly invoked with `$management-coach` and backed by separate private memory.
 - `skills/codex/linkedin-extract`: Extract structured YAML from LinkedIn profile and job URLs using a user-authenticated Playwright browser.
 
 ## Local setup

@@ -1,97 +1,55 @@
 # Assessment workflow
 
-Use this reference only for assessment work. It does not govern source processing, idea selection, overview or key-idea writing, visuals, reading time, or Blink-content review.
+## Inputs and scope
 
-## Outcome and authority
+Use the complete Blink, its source work and the confirmed application context. Preserve the summary, source files and context. Write only quizzes, review.md, the assessment plan and assessment reviews. A user-requested pilot may cover selected ideas in a separate folder; report its scope without claiming whole-book release.
 
-Create source-grounded retrieval questions and, only when a confirmed `application-context.md` supplies a credible work situation, contextual Apply questions and Try-this practice.
+The book determines the learning target and correct reasoning. The context determines the role, domain, ownership and constraints. Carry the user’s requirements and supplied examples of useful language into drafting and review; use them to understand the standard, not as a topic or script for every exercise. These instructions govern assessment writing, including when an older context contains different writing advice. Reuse an already confirmed context; ask only when it is missing or materially ambiguous. Generic assessment uses source-grounded recap throughout, without workplace examples or related-reading links.
 
-- The book and its source work determine the tested concept and defensible answers.
-- `application-context.md` determines actors, work objects, existing behaviour, interaction patterns, and domain language. The book may supply the learner's next practice action, but it cannot supply invented surrounding events or another person's reaction.
-- These instructions determine assessment form only. Examples in the skill are never evidence that a situation occurs in the user's context.
+## Plan
 
-Never manufacture a situation to complete a preferred assessment shape. Use `RECAP_ONLY` when the context does not directly support useful application.
+Choose `FULL` when a credible situation supports useful application and a small practice. Otherwise choose `RECAP_ONLY`: recall plus a different comprehension question. Do not force application to fill the template. If the source cannot support meaningful recap, report the missing prerequisite.
 
-## Inputs and modes
+Keep one short plan entry per question or practice using the output template. Record the target and source anchor, context basis where relevant, correct reasoning and a tempting misconception. For practice, record the task and the decision or next step it enables. Do not duplicate learner-facing prose across fields. Design the options together, then record their letters and freeze the plan before independent review.
 
-Assessment work requires an existing complete Blink Book. In assessment mode, modify only `quizzes/`, `review.md`, `_work/assessment-plan.md`, and `_work/assessment-reviews/`.
+## Scenarios
 
-For contextual assessment, locate and read the user-confirmed `application-context.md` completely. If the user already named the file in the current request, do not ask them to confirm it again. The file must describe one domain. If it is missing or ambiguous, ask for the file or clarification.
+Use ordinary situations consistent with the context. Its examples are starting points, not an exhaustive list. A fictional case may add plausible facts needed for a decision; list those additions in the plan and make the case's hypothetical status clear. Never present them as known events in the user's workplace. Do not invent a person's private motives as an observed fact or make them speak the book's terminology to establish a diagnosis.
 
-If the user explicitly chooses generic assessment, use `RECAP_ONLY` throughout. Generic assessment contains no workplace scenarios, Apply questions, Try-this practice, domain claims, or domain links.
+Print the facts needed to choose an answer. Delete a detail if removing it leaves the same judgement defensible. State who acts, what work is involved and what needs deciding. Respect the distinction between owning the work and owning a downstream decision. If useful application requires an unlikely situation, use recap.
 
-## Stage 1: Route
+## Draft
 
-Choose a route for each key idea before drafting:
-
-- `FULL`: the source supports meaningful retrieval and the application context contains a concrete, currently useful situation in which the book mechanism changes a judgement or action.
-- `RECAP_ONLY`: the source supports retrieval and deeper comprehension, but contextual application would require an invented actor, event, object, behaviour, motive, workflow, or consequence.
-
-Do not prefer `FULL`. A broad responsibility, topic, or goal is not evidence of a particular conversation or event. If the source cannot support meaningful recap, stop: the existing Blink or source work is inadequate. Treat that as a prerequisite failure rather than writing `BLOCKED` into a completed assessment plan.
-
-## Stage 2: Plan
-
-Create one `_work/assessment-plan.md` using `references/output-templates.md`. Do not create context contracts, scenario ledgers, or separate per-idea design files.
-
-The plan contains one entry for every learner-facing question and Try-this practice. Keep only evidence that changes the design decision:
-
-- route and route reason;
-- source mechanism and exact source anchor;
-- intended learner judgement or action;
-- answer mode, precommitted answer set, and concise option rationales for questions;
-- an exact context excerpt for Apply, Try this, or a contextual review question;
-- the proposed situation or practice in one literal sentence;
-- the Apply/Try-this distinction; and
-- the most likely rejection risk.
-
-An applied entry fails planning when its context excerpt merely discusses the same topic but does not establish the actor, work object, or ordinary situation needed by the item. Do not combine unrelated context examples into a new workflow. Do not add dialogue, emotional self-report, predicted reactions, meetings, artefacts, audiences, or event sequences absent from the excerpt.
-
-Mark the plan `Plan status: FROZEN` before drafting. The plan is a compact precommitment, not a second assessment and not an essay explaining compliance.
-
-## Stage 3: Draft
-
-All knowledge-check questions have four options. Do not use open-response questions or answers. Use one best answer by default. Use `select all that apply` only when two or three options are independently correct and recognising the complete set is the intended judgement.
+Use plain British English. Prefer short, literal sentences. Define unfamiliar book terms where needed; avoid invented management labels and commentary about writing or reviewing the assessment.
 
 ### Quick recall
 
-Test the most important retrievable relationship, distinction, mechanism, condition, or named term in the key idea. Prefer a meaningful `why`, `how`, or distinction over simple recognition when the key idea teaches more than a definition. Do not import workplace context.
+Retrieve one central idea, definition, distinction or mechanism. Ask it directly. A simple question such as “What makes a challenge adaptive?” is sufficient when that distinction is the learning target. Difficulty should come from meaningful alternatives, not convoluted phrasing. Keep recall book-only.
 
 ### Apply
 
-Use only facts supported by the plan's exact context excerpt. Ask for one immediate decision, diagnosis, priority, or conclusion for which the book mechanism changes the judgement. The learner must not need to invent what happened before or what another person meant.
+Ask for one immediate action, diagnosis or priority. The situation must make the book's distinction matter. Do not announce the desired reasoning in the lead-in and ask the reader to find its paraphrase among the options. A preliminary inquiry can be useful, but it does not demonstrate a diagnosis the scenario leaves unresolved.
+
+### Options and feedback
+
+Give four options, with one best answer by default. Use select-all only when two or three options are independently correct and recognising the set matters. Keep questions multiple-choice.
+
+Write the options as a competing set: comparable scope, detail, grammar and plausibility. Wrong answers should reflect a misconception, missing condition or action useful at another time. Reject a correct answer that stands out through length, nuance, courtesy or completeness. Its extra detail being accurate does not excuse the cue. Redesign the set instead of padding the distractors.
+
+Keep feedback brief: name the concept, explain the answer and distinguish the strongest alternative. Explain every option for select-all. Preserve necessary qualifications, but never use the explanation to supply missing scenario facts or rescue a weak question.
 
 ### Try this
 
-Try this is a small guided practice, not a question, role-play script, or second explanation. Ground it in an ordinary work moment and work object established by the application context. State:
+Use **When**, **Do** and **Why now** for a familiar work problem, one practical task and its useful result. A conversation can include related questions needed to reach a decision; do not reduce it to one sentence merely to satisfy an action count. State what the people involved should work out and how that helps the work. Prefer direct instructions to generic coaching questions. Include quoted dialogue only when it sounds natural and helps more than describing the task.
 
-- **When:** the recognisable trigger;
-- **Do:** one observable action the learner can take now; and
-- **Why now:** the useful result available in the current situation.
+Keep the task focused on the book's lesson. Include related steps when they are needed to reach the practical result; omit detached exercises. General management advice counts as application only when the book's mechanism changes what the learner does.
 
-The action must be useful before or during a changeable decision or interaction. Do not rely on a hypothetical next audience, recurrence, follow-up, or repair of damage that can no longer be changed. Do not invent prior dialogue or require a character to articulate a private feeling or interpretation. Suggested words are allowed only when the application context establishes that kind of conversation and the wording is ordinary.
+Apply tests a judgement; Try this must add meaningful practice beyond the Apply answer. They may share a situation when useful. Do not invent another event merely to make them different.
 
-Apply and Try this must do different learning jobs: Apply asks the learner to judge a situation; Try this rehearses a concrete action. They may use the same recurring context or work object when that is the most credible choice. Do not invent a second scenario merely to make them look different.
+### Deeper comprehension and final review
 
-### Deeper comprehension
+For recap-only, test a different implication, condition or trade-off from recall. Final review questions should require fresh judgements, not repeat section questions. Use five for five to seven ideas, six for eight or more, and one per idea for shorter books. Combine concepts only when they naturally affect the same judgement.
 
-For `RECAP_ONLY`, use a second source-grounded question testing a different mechanism, implication, condition, or trade-off from Quick recall. Do not disguise recap as contextual application.
+For contextual files, include useful related-reading connections using the context's approved sources and existing Blinks. Name each source book and explain the connection. Omit loose links rather than filling a quota.
 
-## Options and explanations
-
-Design all four options as one family before marking answers. Every option must answer the same lead-in and have comparable grammar, informational load, qualification, courtesy, and length. Distractors should express a recognisable misconception, missing condition, timing error, or trade-off.
-
-Reject an option set when an answer is identifiable through length, nuance, completeness, or tone; when a one-best question has two defensible answers; or when a multi-select answer becomes correct only in combination with another option. Redesign the set instead of padding or trimming individual options.
-
-Feedback must name the relevant book concept, use only facts printed in the question, and explain why the correct and incorrect options differ. For multi-select, explain every option. For one-best questions, explain the correct answer and the strongest distractor at minimum. Do not add a fact needed to solve the question only after revealing the answer.
-
-Use plain, idiomatic British English. Every important noun phrase must be a book term defined on the page, a term established by the application context, or ordinary literal language. Do not invent labels for meetings, documents, messages, or processes. If a concrete noun is available, use it.
-
-## Mixed review
-
-Create new questions rather than recycling section stems, scenarios, distinctive wording, or answer logic. Use five questions for books with five to seven ideas, six for books with eight or more, and one per idea for shorter books.
-
-A review question may be contextual only when its plan entry has an exact supporting context excerpt. Otherwise use a source-grounded recap question. Do not manufacture contextual cases to reach the question count. Interleave ideas only when one credible situation naturally requires both mechanisms.
-
-## Evidence limits
-
-Quick recall records retrieval for that item. Apply records one constrained contextual judgement. Try this is guided practice. The assessment does not establish independent mastery, broad transfer, or durable retention.
+These exercises demonstrate item-level retrieval, constrained judgement and guided practice. They do not establish mastery or durable retention.

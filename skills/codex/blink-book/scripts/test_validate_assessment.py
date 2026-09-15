@@ -4,6 +4,9 @@
 from __future__ import annotations
 
 import hashlib
+import re
+
+import validate_assessment
 import shutil
 import subprocess
 import sys
@@ -287,9 +290,77 @@ def require_failure(result: subprocess.CompletedProcess[str], message: str) -> N
         raise AssertionError(f"Expected failure containing {message!r}:\n{result.stdout}\n{result.stderr}")
 
 
+def use_format_two(book: Path, context: Path | None) -> None:
+    plan = book / "_work" / "assessment-plan.md"
+    text = plan.read_text()
+    text = text.replace("# Assessment plan", "# Assessment plan\n\n**Assessment format:** 2", 1)
+    text = text.replace("**Source mechanism:**", "**Learning target:**")
+    text = text.replace("**Context excerpt:**", "**Context basis:**")
+    text = text.replace("**Proposed situation or practice:**", "**Scenario facts:**")
+    text = text.replace("**Option rationales:**", "**Reasoning:**")
+    text = text.replace("**Intended learner action:**", "**Action and use:**")
+    text = re.sub(r"^\*\*(?:Intended learner judgement|Apply/Try-this distinction|Rejection risk):\*\*.*\n", "", text, flags=re.MULTILINE)
+    text = re.sub(r"^\*\*(?:Answer mode|Correct answers|Reasoning):\*\* N/A\.\n", "", text, flags=re.MULTILINE)
+    plan.write_text(text)
+    refresh_reviews(book, context)
+    learner = book / "_work" / "assessment-reviews" / "context-language-review.md"
+    learner.write_text(learner.read_text().replace("## File decisions", """**Answers and explanations withheld until first pass saved:** yes
+
+## First pass
+
+The comparison of evidence with a conclusion determines the answer; practice asks for one check before sharing.
+
+## Feedback check
+
+The explanation distinguishes evidence from a footnote or agreement without adding facts.
+
+## File decisions""", 1))
+
+
+def check_format_two(root: Path) -> None:
+    for contextual in (True, False):
+        book, context = create_book(root / f"compact-{contextual}", contextual)
+        context = context if contextual else None
+        use_format_two(book, context)
+        if (result := run(book, context)).returncode:
+            raise AssertionError(f"Format 2 positive case failed:\n{result.stdout}")
+        if contextual:
+            plan = book / "_work" / "assessment-plan.md"
+            valid = plan.read_text()
+            plan.write_text(valid.replace("Managers review an analyst's written report before a recommendation is shared.", "Role: managers coach analysts on evidence and recommendations."))
+            use_digest = sha256(plan)
+            aware = book / "_work" / "assessment-reviews" / "source-aware-review.md"
+            aware.write_text(re.sub(r"(\*\*Plan SHA-256:\*\*) .*", rf"\1 {use_digest}", aware.read_text()))
+            if (result := run(book, context)).returncode:
+                raise AssertionError(f"Context-consistent paraphrase should reach semantic review:\n{result.stdout}")
+            plan.write_text(plan.read_text().replace("**Context basis:** Role: managers coach analysts on evidence and recommendations.", "**Context basis:** None.", 1))
+            require_failure(run(book, context), "applied item requires Context basis")
+        else:
+            learner = book / "_work" / "assessment-reviews" / "context-language-review.md"
+            valid = learner.read_text()
+            learner.write_text(valid.replace("**Answers and explanations withheld until first pass saved:** yes", "**Answers and explanations withheld until first pass saved:** no"))
+            require_failure(run(book, context), "staged blinding is not confirmed")
+            learner.write_text(valid.replace("## First pass", "## Unrecorded first pass"))
+            require_failure(run(book, context), "missing substantive First pass")
+
+    original = question("Which conclusion fits the evidence?")
+    blinded = validate_assessment.blind_assessment(original)
+    assert "Which conclusion" in blinded and "**D.**" in blinded
+    assert "Correct answer" not in blinded and "The book's evidence rule supports A" not in blinded
+    assert "footnote does not repair" not in blinded
+    for malformed in (original.replace("</details>", ""), original + "\nCorrect answer: **B**"):
+        try:
+            validate_assessment.blind_assessment(malformed)
+        except ValueError:
+            pass
+        else:
+            raise AssertionError("Blinding must reject an exposed answer or malformed block")
+
+
 def main() -> int:
     with tempfile.TemporaryDirectory(prefix="blink-assessment-test-") as temp:
         root = Path(temp)
+        check_format_two(root)
         contextual, context = create_book(root / "contextual", True)
         if (result := run(contextual, context)).returncode:
             raise AssertionError(f"Contextual positive case failed:\n{result.stdout}")

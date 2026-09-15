@@ -81,6 +81,28 @@ def unquote_excerpt(raw: str | None) -> str:
     return value
 
 
+def blind_assessment(text: str) -> str:
+    """Remove complete answer blocks before the learner review."""
+    blinded = re.sub(r"<details\b[^>]*>.*?</details\s*>", "", text, flags=re.DOTALL | re.IGNORECASE)
+    if re.search(r"Correct answers?:|</?details\b", blinded, flags=re.IGNORECASE):
+        raise ValueError("Cannot blind assessment: answer text or an incomplete answer block remains")
+    return blinded
+
+
+def validate_compact_context(body: str, label: str, contextual: bool, applied: bool, errors: list[str]) -> None:
+    basis = field_value(body, "**Context basis:**")
+    facts = field_value(body, "**Scenario facts:**")
+    if facts is None or not facts.strip():
+        errors.append(f"{label}: Scenario facts must list additions or use None.")
+    if applied:
+        if not contextual:
+            errors.append(f"{label}: generic assessment cannot contain contextual application")
+        if not substantive(basis):
+            errors.append(f"{label}: applied item requires Context basis")
+    elif basis not in {"None.", "None"} or facts not in {"None.", "None"}:
+        errors.append(f"{label}: recap question must use `None.` for context fields")
+
+
 def validate_question_plan(
     body: str,
     label: str,
@@ -88,8 +110,10 @@ def validate_question_plan(
     context_text: str,
     applied: bool,
     errors: list[str],
+    format_version: int = 1,
 ) -> tuple[str | None, tuple[str, ...]]:
-    for field in QUESTION_FIELDS:
+    fields = ("**Learning target:**", "**Source anchor:**", "**Context basis:**", "**Scenario facts:**", "**Answer mode:**", "**Correct answers:**", "**Reasoning:**") if format_version == 2 else QUESTION_FIELDS
+    for field in fields:
         if field_value(body, field) is None:
             errors.append(f"{label}: missing plan field {field}")
 
@@ -103,6 +127,13 @@ def validate_question_plan(
         errors.append(f"{label}: SELECT_ALL requires two or three correct answers")
     if any(letter not in {"A", "B", "C", "D"} for letter in answers):
         errors.append(f"{label}: Correct answers must use A-D")
+
+    if format_version == 2:
+        for field in ("**Learning target:**", "**Source anchor:**", "**Reasoning:**"):
+            if not substantive(field_value(body, field)):
+                errors.append(f"{label}: plan field is not substantive: {field}")
+        validate_compact_context(body, label, contextual, applied, errors)
+        return mode, answers
 
     for field in ("**Source mechanism:**", "**Source anchor:**", "**Intended learner judgement:**", "**Option rationales:**", "**Rejection risk:**"):
         if not substantive(field_value(body, field)):
@@ -123,7 +154,13 @@ def validate_question_plan(
     return mode, answers
 
 
-def validate_try_plan(body: str, label: str, context_text: str, errors: list[str]) -> None:
+def validate_try_plan(body: str, label: str, context_text: str, errors: list[str], format_version: int = 1) -> None:
+    if format_version == 2:
+        for field in ("**Learning target:**", "**Source anchor:**", "**Action and use:**"):
+            if not substantive(field_value(body, field)):
+                errors.append(f"{label}: plan field is not substantive: {field}")
+        validate_compact_context(body, label, True, True, errors)
+        return
     fields = (
         "**Source mechanism:**",
         "**Source anchor:**",
@@ -167,6 +204,10 @@ def validate_plan(
 
     text = path.read_text(encoding="utf-8")
     context_text = context_file.read_text(encoding="utf-8") if context_file and context_file.is_file() else ""
+    format_label = field_value(text, "**Assessment format:**")
+    if format_label not in {None, "2"}:
+        errors.append("_work/assessment-plan.md: unsupported Assessment format")
+    format_version = 2 if format_label == "2" else 1
     expected_mode = "CONTEXTUAL" if contextual else "GENERIC"
     if field_value(text, "**Assessment mode:**") != expected_mode:
         errors.append(f"_work/assessment-plan.md: Assessment mode must be {expected_mode}")
@@ -208,12 +249,12 @@ def validate_plan(
         if set(components) != expected:
             errors.append(f"{label}: expected plan components {sorted(expected)}, found {sorted(components)}")
             continue
-        item_specs = [validate_question_plan(components["Quick recall"], f"{label} Quick recall", contextual, context_text, False, errors)]
+        item_specs = [validate_question_plan(components["Quick recall"], f"{label} Quick recall", contextual, context_text, False, errors, format_version)]
         if route == "FULL":
-            item_specs.append(validate_question_plan(components["Apply"], f"{label} Apply", contextual, context_text, True, errors))
-            validate_try_plan(components["Try this"], f"{label} Try this", context_text, errors)
+            item_specs.append(validate_question_plan(components["Apply"], f"{label} Apply", contextual, context_text, True, errors, format_version))
+            validate_try_plan(components["Try this"], f"{label} Try this", context_text, errors, format_version)
         else:
-            item_specs.append(validate_question_plan(components["Deeper comprehension"], f"{label} Deeper comprehension", contextual, context_text, False, errors))
+            item_specs.append(validate_question_plan(components["Deeper comprehension"], f"{label} Deeper comprehension", contextual, context_text, False, errors, format_version))
         specs[key_name] = item_specs
 
     expected_review_count = 5 if 5 <= len(key_files) <= 7 else 6 if len(key_files) >= 8 else len(key_files)
@@ -221,9 +262,10 @@ def validate_plan(
     if [int(number) for number, _ in review_sections] != list(range(1, expected_review_count + 1)):
         errors.append(f"_work/assessment-plan.md: expected Review question 1-{expected_review_count}")
     for number, body in review_sections:
-        excerpt = unquote_excerpt(field_value(body, "**Context excerpt:**"))
+        context_field = "**Context basis:**" if format_version == 2 else "**Context excerpt:**"
+        excerpt = unquote_excerpt(field_value(body, context_field))
         applied = excerpt not in {"None.", "None", None}
-        review_specs.append(validate_question_plan(body, f"_work/assessment-plan.md: Review question {number}", contextual, context_text, applied, errors))
+        review_specs.append(validate_question_plan(body, f"_work/assessment-plan.md: Review question {number}", contextual, context_text, applied, errors, format_version))
     return path, routes, specs, review_specs
 
 
@@ -310,6 +352,16 @@ def validate_review_record(
         if heading not in text:
             errors.append(f"{label}: missing file decision for {assessment.relative_to(book_dir)}")
     return reviewer
+
+
+def validate_learner_review_stages(text: str, errors: list[str]) -> None:
+    label = "_work/assessment-reviews/context-language-review.md"
+    if field_value(text, "**Answers and explanations withheld until first pass saved:**") != "yes":
+        errors.append(f"{label}: staged blinding is not confirmed")
+    for heading in ("First pass", "Feedback check"):
+        section = markdown_section(text, heading)
+        if not substantive(section.strip() if section else None):
+            errors.append(f"{label}: missing substantive {heading}")
 
 
 def validate_assessment_standard(
@@ -408,6 +460,8 @@ def validate_assessment_standard(
         expected_context_digest = sha256_file(context_file) if contextual and context_file and context_file.is_file() else "None."
         if field_value(text, "**Context SHA-256:**") != expected_context_digest:
             errors.append("_work/assessment-reviews/context-language-review.md: stale review; context digest does not match")
+        if plan_path.is_file() and field_value(plan_path.read_text(encoding="utf-8"), "**Assessment format:**") == "2":
+            validate_learner_review_stages(text, errors)
 
     if len(answer_positions) >= 4:
         letter, count = Counter(answer_positions).most_common(1)[0]
@@ -417,9 +471,20 @@ def validate_assessment_standard(
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("book_dir", type=Path)
+    parser.add_argument("book_dir", type=Path, nargs="?")
+    parser.add_argument("--blind-file", type=Path, help="Print a learner copy with complete answer blocks removed")
     parser.add_argument("--print-bundle-digest", action="store_true")
     args = parser.parse_args()
+    if args.blind_file:
+        if args.book_dir or args.print_bundle_digest:
+            parser.error("--blind-file cannot be combined with book arguments")
+        try:
+            print(blind_assessment(args.blind_file.read_text(encoding="utf-8")))
+        except (OSError, ValueError) as exc:
+            parser.error(str(exc))
+        return 0
+    if args.book_dir is None:
+        parser.error("provide book_dir or --blind-file")
     book_dir = args.book_dir.expanduser().resolve()
     paths = sorted((book_dir / "quizzes").glob("key-idea-*-comprehension.md"))
     review = book_dir / "review.md"

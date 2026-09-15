@@ -1,89 +1,37 @@
 # Assessment review and release
 
-Use this reference only for assessment work. Assessment quality requires two independent semantic reviewers. Structural validation cannot replace either review.
+## Independent reviews
 
-## Reviewer 1: Source-aware assessment review
+Use two reviewers different from the writer and each other, with no conversation fork. They review concurrently and do not edit learner files. Give both the user’s requirements and supplied examples of useful or unhelpful language. Withhold writer rationale, earlier model reviews, repair history, expected verdicts on the current draft and the other review. Independence must not withhold the user’s standards.
 
-Use a reviewer with no conversation fork. Give it:
+### Source reviewer
 
-- the final key ideas;
-- relevant source-evidence notes and bounded source excerpts;
-- `_work/assessment-plan.md`;
-- the final quizzes and `review.md`; and
-- the confirmed application context when the assessment is contextual.
+Supply the key ideas, bounded source excerpts, plan, context and final assessment. Check each target and answer against its source. Check that the situation actually supports the requested judgement, the strongest distractor is wrong for the stated reason, and practice exercises the relevant mechanism. Distinguish a first diagnostic question from evidence that a diagnosis is established. Direct recall is valid when it retrieves a central idea.
 
-Do not provide writer rationale, drafts, repair history, the other review, expected decisions, or prior failures.
+### Learner reviewer
 
-For every question and practice, verify:
+First supply the user’s brief, context and learner files with **entire answer blocks removed**, including explanations. Do not supply source notes, plans or keys. Use `scripts/validate_assessment.py --blind-file <quiz>` to produce each blinded copy.
 
-- the source anchor supports the tested mechanism;
-- the route is justified;
-- Quick recall tests an important idea rather than trivial wording;
-- Apply makes the source mechanism decisive to one immediate judgement;
-- Try this practises the mechanism through a credible present action;
-- contextual facts do not exceed the quoted context evidence;
-- the answer mode and precommitted answer set are defensible;
-- distractors represent meaningful errors and do not create multiple unintended answers;
-- explanations correctly connect every answer to the book concept; and
-- review questions are new and source-grounded.
+Before seeing feedback, record for each question: the intended task, the selected answer or ambiguity, and what drove that choice. Check whether the stem gives away the reasoning or one option stands out through scope, wording or polish. Correct selection alone is not a pass. For Apply, identify details that can be removed without changing the judgement. For practice, name the work problem and the decision or next step the task enables. Judge whether the intended reader could use the exact wording in an ordinary conversation. Shortness, grammatical clarity and a single question do not establish usefulness. Related questions may form one practical task; reject disconnected exercises or a generic prompt that leaves the reader to invent the useful conversation.
 
-Record the result in `_work/assessment-reviews/source-aware-review.md` using the compact template. Identify the most vulnerable item in each assessment file and classify every finding by severity.
+Save this first pass in the review record. Only then provide the complete learner files for a feedback check. Preserve the first-pass findings and add any issues in the explanations. Do not silently reinterpret a confusing item after seeing its answer.
 
-## Reviewer 2: Context, language, and practice review
+## Decisions and repair
 
-Use a different reviewer with no conversation fork and no source material, source notes, assessment plan, answer key, writer rationale, prior review, repair history, expected decisions, or prior failures. Give it only:
+A `BLOCKER` includes incorrect or ambiguous answers, unsupported reasoning, implausible situations, missing facts, material first-read difficulty, answer cues, a stem that gives away its answer, or a practice with no usable task, unnatural dialogue or disconnected exercises. These fail even when the keyed answer is factually defensible. Quote the passage and explain the defect without mentally rewriting it.
 
-- the confirmed application context, if contextual; and
-- the final learner-facing assessment files with `Correct answer(s)` lines removed but explanations retained.
+An `ADVISORY` is optional polish that does not affect understanding, usability or the value of the question. The writer may address advisories in the same consolidated repair as blockers; they do not require their own review loop. Replace or drop weak items instead of adding clauses to defend them.
 
-For every item, test the exact learner-facing words:
+Run at most three paired rounds, using fresh reviewers after repairs. Review the complete current assessment scope each time. Stop incomplete if blockers remain in round three or the skill's 60-minute invocation budget expires. If separate reviewers are unavailable, report the missing review and leave the output incomplete.
 
-- Can a capable first-time learner identify every actor, object, action, referent, decision, and result without mentally supplying missing facts?
-- Is every important phrase ordinary language or explicitly established in the page or application context?
-- Does any generic container phrase stand in for a concrete comment, question, feedback, report, decision, or action that could be named directly? Apply this test to explanations as well as stems and options.
-- Does the situation follow from the application context without an invented meeting, artefact, workflow, audience, motive, reaction, or event sequence?
-- Would people plausibly behave or speak this way? Fail convenient dialogue that states a feeling, interpretation, or book construct a person would more likely leave implicit.
-- Do all options answer the same question in parallel form without signalling the answer through length, nuance, qualification, courtesy, or completeness?
-- Does the explanation clarify the options without supplying missing question facts?
-- Is Try this a useful action now in a familiar, context-supported moment?
+Each reviewer authors the record in the output template. Use PASS only with `None.` under Blockers. Any learner edit invalidates both reviews; plan edits invalidate source review; context edits invalidate both. Keep the source reviewer bound to the plan digest and both reviewers bound to the assessment bundle digest. A pilot records only its tested scope.
 
-For every file, quote the most vulnerable phrase and state what its exact words establish. If the reviewer must produce a charitable paraphrase that adds a fact or motivation, record a blocker. Record the result in `_work/assessment-reviews/context-language-review.md` and classify every finding by severity.
+## Validation and release
 
-## Finding severity
+After semantic PASS, run `scripts/validate_output.py` in the selected mode. Before finalising review records, use `scripts/validate_assessment.py <book> --print-bundle-digest` and record the plan's SHA-256 in the source review. The validator checks schemas, keys, context provenance, links, declared reviewer separation and digest freshness. It cannot establish practical realism, source fidelity, review independence in fact or assessment quality. Length warnings prompt inspection; they are not quality scores.
 
-A `BLOCKER` is a defect that makes an item invalid or materially misleading: unsupported source or context, an incorrect or non-unique answer, invented situational facts, missing facts needed to answer, an unusable practice, material ambiguity, or an explanation that cannot justify the keyed answer. An `ADVISORY` is a non-material wording or polish suggestion that does not change validity, understanding, or learner action.
+For format 2, the learner record must preserve `## First pass` and `## Feedback check`, and confirm that answers and explanations were withheld until the first pass was saved. Older assessment records retain their original structural contract; passing their validation does not certify them under this workflow.
 
-Only blockers fail a review or authorise repair. Use `Decision: PASS` when `## Blockers` contains exactly `None.` or `None`; advisories may remain with PASS.
+When changing this subsystem, run `scripts/test_validate_assessment.py`. Also test behaviour independently on known failures and fresh generated items. Give test authors the skill and minimum source/context inputs, not the desired wording or prior diagnosis. For a redesign, include held-out books with different mechanisms and assessment modes. Known examples calibrate the standard; recognising them is not independent proof. Judge whether fresh tasks are clear, credible and meaningful; do not turn wording preferences into exact-match tests.
 
-## Independence and invalidation
-
-The writer and the two reviewers must be different, and the reviewers must be different from each other. Reviewers may not edit files during their first pass.
-
-After a repair:
-
-- any learner-facing assessment change invalidates both reviews;
-- a plan-only change invalidates the source-aware review;
-- an application-context change invalidates both reviews and every contextual plan entry.
-
-Rerun affected reviews on the complete current artefacts within the bounded process below. A PASS attached to an earlier digest is stale.
-
-## Bounded review and repair
-
-1. Run up to three fresh concurrent paired review rounds on the complete current assessment bundle without prior findings.
-2. After a failed round, the writer makes one consolidated, substantive repair of all blockers before the next round; do not repair advisories or use piecemeal micro-iterations.
-3. If either reviewer reports a blocker in round 3, stop with the assessment incomplete.
-4. Obey the skill's 60-minute total invocation budget. At the limit, stop incomplete rather than weakening a gate or continuing review.
-
-## Deterministic validation
-
-Run `scripts/validate_output.py` in the selected assessment mode after both semantic reviews. The validator checks only reliable mechanical invariants: required files, routes and component shapes, exact context excerpts, question and answer syntax, plan/answer agreement, reviewer independence, approved links, and fresh bundle digests.
-
-Before finalising review records, run `scripts/validate_assessment.py books/<book-slug> --print-bundle-digest` and record that digest in both reviews. Record the ordinary SHA-256 digest of `_work/assessment-plan.md` in the source-aware review.
-
-It does not judge behavioural credibility, source fidelity, plain language, usefulness, distractor quality, or whether an answer is truly correct. It must not contain phrase blacklists or semantic-writing gates. Warnings about option length or answer-position concentration are prompts for human/model review, not proof of failure.
-
-When changing this subsystem, run `scripts/test_validate_assessment.py` and conduct independent forward tests using realistic complete outputs. Test outcomes and meaningful invariants, not exact generated wording.
-
-## Release
-
-Do not describe an assessment as reviewed or complete until both semantic reviews contain no blockers and deterministic validation passes on the same learner-facing assessment bundle within the three-round cap. State assessment evidence modestly: retrieval, constrained judgement, and guided practice do not establish mastery or durable transfer.
+Release only with both semantic PASS records and structural validation for the final files. Report a scoped pilot as a pilot, never as a repaired full assessment. A user rejection remains a failed result even when model reviewers pass; preserve that evidence and reassess the design.

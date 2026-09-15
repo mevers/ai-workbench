@@ -2,7 +2,7 @@
 name: blink-book
 description: Create Blinkist-style book learning curricula from one nonfiction book or book-like resource. Use when the user provides a book title, PDF, EPUB, or asks to create a full Blink Book, a Blink-only summary, or an assessment for an existing Blink Book. Verify source access, process book content and original visuals without loading the whole book into context, produce section-based Markdown, and create evidence-based comprehension checks.
 metadata:
-  version: "1.3.2"
+  version: "1.4.2"
 ---
 
 # Blink Book
@@ -26,6 +26,8 @@ Use the assessment-free **blink-only** variant only when the user says one of th
 - **assessment:** Create or regenerate only `quizzes/`, `review.md`, `_work/assessment-plan.md`, and `_work/assessment-reviews/` for an existing complete Blink Book. Require `metadata.yaml`, `overview.md`, all `key-idea-*.md` files, `visuals/`, and required source-work files to exist first. Never modify the overview, metadata, key ideas, visuals, existing source-work files, or source material. If they are incomplete, stop and tell the user what the existing Blink Book needs; do not repair it as part of assessment mode.
 
 In **all** mode, write the overview and key-idea assessment navigation during the learner-facing phase, then create the assessment without altering those files. This preserves the same boundary as `assessment` mode.
+
+For summary reviews, use the existing review notes to show how the most vulnerable passage supports the key idea or enables the requested judgement or action. Flag a material gap if this requires inventing reasoning, facts or instructions. Accept concise, practical wording when it works as written; extra detail is not a requirement.
 
 ## Mandatory independent summary review
 
@@ -105,7 +107,7 @@ Never load an entire book into context. Work in bounded passes and write interme
 10. Draft the Big Picture from the same source-structure and evidence work. Keep the Big-Picture Writing and Big-Picture Validation rules below unchanged. It has its own synthesis job; do not construct it by mechanically shortening the key ideas.
 11. For each key idea, reread its linked source chunks and create `_work/idea-argument-packs/key-idea-NN.md`. Assemble enough source material to support a full explanation: the conclusion, the problem or tension it addresses, the causal explanation, essential conditions or limits, concrete source detail, and the transferable implication. Include a plain-language argument chain that states the source fact, the mechanism, the concept, and the transferable conclusion. Do not write learner-facing prose until this chain explains how the source detail supports the conclusion. An argument pack is not a concise evidence summary and is not learner-facing prose.
 12. Design the reader’s path for each idea before drafting. First decide the transferable conclusion and central model or distinction the reader must understand. Then select only the source detail needed to explain and support that argument. Choose the sequence that best serves it, and decide where prose, a short list, a comparison, or a sequence will improve reading. Do not use a fixed section template.
-13. Write a deliberately fuller first draft from the argument pack in `_work/key-idea-drafts/key-idea-NN-full-draft.md`. Then tighten it into the learner-facing section by removing repetition, generic extrapolation, and source detail that does not advance the explanation; restructure when it improves scanning. Before finalising, run the plain-language and non-template prose pass below. For every sentence, ask whether a reader can identify what it refers to, what happens, and why it matters in this argument on a natural first read. Rewrite from the argument chain or remove any sentence that fails. Do not add post-hoc padding to meet a reading-time estimate. If tightening reveals a thin idea, return to the argument pack and source chunks, then rebuild the explanation. Repeat the complete prose pass after every reviewer repair; do not add a repair as another clause to an already finished sentence.
+13. Write a deliberately fuller first draft from the argument pack in `_work/key-idea-drafts/key-idea-NN-full-draft.md`. Then tighten it into the learner-facing section. Preserve the reasoning that makes the idea understandable: remove repetition and unnecessary detail while retaining essential definitions, connections, actors and actions. If material does not advance the section’s central lesson, reconsider its placement. Before finalising, run the plain-language and non-template prose pass below. For every sentence, ask whether a reader can identify what it refers to, what happens, and why it matters in this argument on a natural first read. Rewrite from the argument chain or remove any sentence that fails. Do not add post-hoc padding to meet a reading-time estimate. If tightening reveals a thin idea, return to the argument pack and source chunks, then rebuild the explanation. Repeat the complete prose pass after every reviewer repair; do not add a repair as another clause to an already finished sentence.
 13a. Before independent review, complete every writer-side audit required below: Key-Idea Validation, Big-Picture Validation, source terminology, source purity and coverage, curriculum-wide form, visual integration, length, and deterministic prose checks. Apply all resulting learner-facing edits before the first paired review.
 13b. Run the mandatory independent summary review protocol below on `overview.md` and every final learner-facing key idea. After each reviewer-repair stage, rerun deterministic validation and inspect the repaired passage, its surrounding argument, and every affected cross-file relationship. Repeat a full manual whole-file writer audit only when a repair changes the file's structure or central argument.
 13c. In `all` or `blink-only` mode, finish the learner-facing summary, pass the completion release gate, and run `scripts/validate_source_work.py books/<book-slug>` before beginning any assessment work. In `blink-only` mode, stop here.
@@ -242,29 +244,22 @@ If a new version is materially shorter than an existing trusted version, explain
 
 ### Assessment architecture
 
-Everything under this heading governs assessment only. It must not change source processing, idea selection, overview or key-idea prose, visuals, reading-time calculation, or learner-facing summary review.
+Assessment work begins after the summary is complete. Preserve source processing, key ideas, visuals and summary review. The book determines correct reasoning; the confirmed application context determines the domain and role. The user’s requirements apply to writing and review. Assessment form and review follow these references, including when an older context file contains writing advice:
 
-For the assessment phase of `all` mode and for `assessment` mode, read these files completely and use each for its stated job:
+- `references/assessment-workflow.md`: plan, draft, question design and practice.
+- `references/assessment-review.md`: independent review, repair and release.
+- The assessment section of `references/output-templates.md`: file schemas.
 
-1. `references/assessment-workflow.md` for application-context handling, routes, the single assessment plan, question design, Try-this practice, options, explanations, and mixed review.
-2. `references/assessment-review.md` for the two independent semantic reviews, the three-round repair cap, deterministic validation, and release.
-3. The assessment section of `references/output-templates.md` for exact learner-facing and internal artifact schemas.
+Read all three before assessment work. Follow this sequence:
 
-Do not use the surrounding Blink-content instructions to invent, complete, or judge an applied assessment situation. The confirmed `application-context.md` is the sole authority for workplace situations, actor behaviour, work objects, interaction patterns, and domain language. The book is the sole authority for the tested concept and correct answer.
+1. Read the confirmed context, or use generic recap when requested. Do not create or edit a context as part of assessment generation.
+2. Choose `FULL` or `RECAP_ONLY` per idea and plan the learning target. Use a plausible fictional situation consistent with the context only when it makes the book's distinction useful. Print the facts needed to answer; do not present invented events as facts about the user.
+3. Draft questions, options and practice together, then freeze the answer key and plan for review.
+4. Run two independent reviewers concurrently: source fidelity and learner usability. The learner reviewer records a first pass before seeing answers or explanations.
+5. Consolidate repairs, replacing weak items where necessary. Repeat with fresh reviewers for at most three rounds, within the invocation budget.
+6. Release only after both reviews and structural validation pass on the same files. Stop incomplete at either limit.
 
-The assessment workflow has this fixed order:
-
-1. confirm the assessment mode and application context;
-2. choose `FULL` or `RECAP_ONLY` for each key idea and freeze one compact `_work/assessment-plan.md`;
-3. draft the learner-facing assessments from that plan;
-4. run up to three fresh concurrent paired review rounds with an independent source-aware reviewer and an independent context, language, and practice reviewer;
-5. after a failed round, make one consolidated, substantive repair of all blockers before both reviewers assess the complete current bundle afresh without prior findings; and
-6. stop with the assessment incomplete if either reviewer reports a blocker in round 3; and
-7. run deterministic structural validation on the same final assessment bundle.
-
-Fail closed. An unsupported or doubtful workplace situation routes the key idea to `RECAP_ONLY`; it is not repaired with an application assumption. If even source-grounded recap is not possible, stop and report a prerequisite failure in the existing Blink or source work.
-
-No reviewer or validator may substitute for another stage. Any learner-facing assessment change invalidates both reviews. A plan-only change invalidates the source-aware review, and an application-context change invalidates both reviews and every contextual plan entry.
+Assessment edits invalidate both reviews. Plan edits invalidate source review; context edits invalidate both reviews and contextual plans.
 
 ## Files To Read When Needed
 

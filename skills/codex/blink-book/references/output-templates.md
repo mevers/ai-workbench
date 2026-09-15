@@ -153,9 +153,9 @@ Commit to each answer before expanding its answer block.
 
 ## Try this in your <domain> environment
 
-**When:** <Recognisable trigger established by the application context>
+**When:** <Recognisable trigger consistent with the application context>
 
-**Do:** <One observable action; no required open response>
+**Do:** <One practical task; related questions or steps may serve it>
 
 **Why now:** <Useful result in the current situation>
 
@@ -222,148 +222,100 @@ Use the `RECAP_ONLY` learner-facing structure without related-ideas sections or 
 
 ## Assessment plan
 
-Path: `_work/assessment-plan.md`
+Use format 2 for new assessments. Retain older plans when their assessments are outside the task scope.
 
 ```md
 # Assessment plan
 
+**Assessment format:** 2
 **Assessment mode:** <CONTEXTUAL | GENERIC>
-**Context path:** <confirmed path or `None.`>
-**Context SHA-256:** <digest or `None.`>
+**Context path:** <confirmed path or None.>
+**Context SHA-256:** <digest or None.>
 
 ## Key idea 1
 
 **Route:** <FULL | RECAP_ONLY>
-**Route reason:** <source- and context-based reason>
+**Route reason:** <why this idea supports useful application, or why recap is better>
 
 ### Quick recall
 
-**Source mechanism:** <one tested mechanism>
-**Source anchor:** <exact source anchor>
-**Intended learner judgement:** <one retrieval judgement>
+**Learning target:** <one distinction or mechanism>
+**Source anchor:** <chapter and section>
+**Context basis:** None.
+**Scenario facts:** None.
 **Answer mode:** <ONE_BEST | SELECT_ALL>
-**Correct answers:** <letter or comma-separated letters>
-**Option rationales:** <concise A-D support or error rationales>
-**Context excerpt:** None.
-**Proposed situation or practice:** None.
-**Apply/Try-this distinction:** None.
-**Rejection risk:** <one concrete risk>
+**Correct answers:** <letter or comma-separated letters, after drafting>
+**Reasoning:** <correct reasoning and the tempting misconception; brief A-D rationales for select-all>
 
 ### Apply
 
-<For `FULL`, repeat the fields above. Quote one exact `Context excerpt`, describe the proposed situation in one literal sentence, and state how Apply differs from Try this.>
+<For FULL, repeat the question fields. Context basis names the relevant context section and constraint. Scenario facts lists the added hypothetical facts, or None. when no additions are needed.>
 
 ### Try this
 
-**Source mechanism:** <mechanism being practised>
-**Source anchor:** <exact source anchor>
-**Intended learner action:** <one observable action>
-**Answer mode:** N/A.
-**Correct answers:** N/A.
-**Option rationales:** N/A.
-**Context excerpt:** <one exact excerpt from application-context.md>
-**Proposed situation or practice:** <When / Do / Why now in one literal sentence>
-**Apply/Try-this distinction:** <judgement versus guided action>
-**Rejection risk:** <one concrete risk>
+**Learning target:** <mechanism practised>
+**Source anchor:** <chapter and section>
+**Context basis:** <context section and relevant ordinary situation>
+**Scenario facts:** <added hypothetical facts or None.>
+**Action and use:** <one practical task and the decision or next step it enables>
 
-<For `RECAP_ONLY`, replace Apply and Try this with `### Deeper comprehension`, using the question fields and `None.` for the three context-related fields.>
+<For RECAP_ONLY, replace Apply and Try this with Deeper comprehension using the question fields and None. for both context fields.>
 
 ## Review question 1
 
-**Source mechanism:** <tested mechanism or linked mechanisms>
-**Source anchor:** <exact source anchor>
-**Intended learner judgement:** <one judgement>
-**Answer mode:** <ONE_BEST | SELECT_ALL>
-**Correct answers:** <letter or comma-separated letters>
-**Option rationales:** <concise A-D support or error rationales>
-**Context excerpt:** <exact excerpt for a contextual question, otherwise `None.`>
-**Proposed situation or practice:** <one literal sentence, otherwise `None.`>
-**Apply/Try-this distinction:** None.
-**Rejection risk:** <one concrete risk>
-
-<Repeat for every key idea and review question.>
+<Repeat the question fields; use None. for both context fields when book-only.>
 
 Plan status: FROZEN
 ```
 
-## Source-aware review record
+## Review records
 
-Path: `_work/assessment-reviews/source-aware-review.md`
+Use `_work/assessment-reviews/source-aware-review.md` and `context-language-review.md`. Each reviewer writes their own record. Include every assessed quiz and review.md under File decisions; a scoped pilot includes only its tested files.
 
 ```md
-# Source-aware assessment review
+# <Source-aware assessment review | Context, language, and practice review>
 
-**Reviewer ID:** <identity distinct from writer and other reviewer>
+**Reviewer ID:** <actual reviewer identity>
 **Writer and reviewer are different:** yes
 **Review wave:** <1 | 2 | 3>
-**No writer rationale, prior findings, or expected decisions supplied:** yes
-**Plan SHA-256:** <current plan digest>
-**Assessment bundle SHA-256:** <current bundle digest>
-
-## File decisions
-
-### quizzes/key-idea-NN-comprehension.md
-
-**Most vulnerable item:** <item and exact rejection risk>
-**Source, route, and context validity:** <evidence>
-**Answer and explanation validity:** <evidence>
-**Findings:** <BLOCKER or ADVISORY with evidence, or `None.`>
-
-### review.md
-
-<Repeat the fields above.>
-
-## Blockers
-
-None.
-
-## Advisories
-
-None.
-
-## Gate decision
-
-Decision: PASS
+**Assessment bundle SHA-256:** <digest>
 ```
 
-## Context, language, and practice review record
+The source review also records `**Plan SHA-256:** <digest>`.
 
-Path: `_work/assessment-reviews/context-language-review.md`
+The learner review also records:
 
 ```md
-# Context, language, and practice review
+**Context SHA-256:** <digest or None.>
+**Answers and explanations withheld until first pass saved:** yes
 
-**Reviewer ID:** <identity distinct from writer and other reviewer>
-**Writer and reviewer are different:** yes
-**Review wave:** <1 | 2 | 3>
-**Source, plan, answer keys, prior findings, and expected decisions withheld:** yes
-**Context SHA-256:** <current context digest or `None.`>
-**Assessment bundle SHA-256:** <current bundle digest>
+## First pass
 
+<Save before viewing complete learner files. For each question record the task, chosen answer or ambiguity, and evidence of content reasoning or answer cues. Assess each practice's situation and usefulness.>
+
+## Feedback check
+
+<After the first pass is saved, inspect explanations for accuracy of comparison, missing facts and unnecessary commentary.>
+```
+
+Both records finish with:
+
+```md
 ## File decisions
 
 ### quizzes/key-idea-NN-comprehension.md
 
-**Literal reconstruction:** <what the exact words establish>
-**Context and behavioural reality:** <evidence, or `Not applicable` in generic mode>
-**Plain language and option neutrality:** <evidence>
-**Try-this usefulness:** <present value, or `Not applicable`>
-**Most vulnerable phrase:** <exact phrase and why it passes>
-**Findings:** <BLOCKER or ADVISORY with evidence, or `None.`>
-
-### review.md
-
-<Repeat the fields above.>
+<Quote any defect and explain its effect. Give the verdict and evidence for source/answer validity or learner usability, according to the reviewer role.>
 
 ## Blockers
 
-None.
+<Findings, or exactly None.>
 
 ## Advisories
 
-None.
+<Optional polish, or None.>
 
 ## Gate decision
 
-Decision: PASS
+Decision: <PASS | FAIL>
 ```

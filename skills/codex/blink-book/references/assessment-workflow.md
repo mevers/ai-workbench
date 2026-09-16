@@ -40,7 +40,7 @@ Keep feedback brief: name the concept, explain the answer and distinguish the st
 
 ### Try this
 
-Use **When**, **Do** and **Why now** for a familiar work problem, one practical task and its useful result. A conversation can include related questions needed to reach a decision; do not reduce it to one sentence merely to satisfy an action count. State what the people involved should work out and how that helps the work. Prefer direct instructions to generic coaching questions. Include quoted dialogue only when it sounds natural and helps more than describing the task.
+Start with a specific, recognisable situation in the reader’s role: who is involved, what work they are doing and what has gone wrong or needs deciding. Give clear actions that apply the book’s insight to that situation. A conversation can include related questions needed to reach a decision; do not reduce it to one sentence merely to satisfy an action count. State what the people involved should work out and how that helps the work. Prefer direct instructions to generic coaching questions. Include quoted dialogue only when it sounds natural and helps more than describing the task.
 
 Keep the task focused on the book's lesson. Include related steps when they are needed to reach the practical result; omit detached exercises. General management advice counts as application only when the book's mechanism changes what the learner does.
 

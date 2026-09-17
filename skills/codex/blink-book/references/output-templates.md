@@ -1,6 +1,8 @@
 # Output templates
 
-Use these structures for final learner-facing files. Keep placeholders out of final output.
+Use these structures for final learner-facing files in `books/<book-slug>/`. Keep placeholders out of final output. The prose body follows the idea's argument, not a fixed template.
+
+Store summary preparation in `_work/`, original images in `visuals/` and quizzes in `quizzes/`. Include a visual inventory link in the overview. Every key idea needs a title stating its central point, a retention recap, source basis and navigation. Source terms retain their original spelling and capitalisation.
 
 ## metadata.yaml
 
@@ -8,7 +10,7 @@ Use these structures for final learner-facing files. Keep placeholders out of fi
 title: "<Book title>"
 author: "<Author>"
 book_slug: "<book-slug>"
-source_type: "pdf|epub|web|internal|user-provided"
+source_type: "pdf|epub"
 extraction_quality: "high|medium|low|not-applicable"
 visual_access_status: "complete|partial|none|not-applicable"
 limitations:
@@ -33,7 +35,7 @@ Summary generated with Blink skill version: <same value as metadata.yaml>
 
 ## Big picture
 
-<Brief orientation in 2-4 short paragraphs. Explain what the book is trying to change in the reader's thinking.>
+<A readable explanation of the central argument. Introduce the essential concepts in bold and explain how they connect. Give a newcomer enough context to follow the key ideas.>
 
 ## Key ideas
 
@@ -65,17 +67,15 @@ Use the same heading, byline, reading-time, Big picture, Key ideas, and Visuals 
 
 ## <Crisp sentence-style key idea title>
 
-<Short opener. For Key Idea 1, this can be a "What's in it for me?" style orientation. For later ideas, explain why this matters in 2-3 sentences.>
-
-<Mobile-friendly summary. Use short paragraphs, bullets, and tables when they compress distinctions or tradeoffs. Avoid wall-of-text blocks.>
+<A connected explanation of the transferable idea, supported by source detail. Choose paragraphs, lists or tables where they help understanding.>
 
 ![<Source caption or concise description>](visuals/<filename>.png)
 
-<Continue explanation only if the visual is directly relevant. Do not include visuals decoratively.>
+<Explain the relevant figure and its symbols using the source. Omit this image block when no source visual helps teach the idea.>
 
 ## Remember this
 
-<!-- Use bullet points. Vary their number and length according to the key idea; include only what the reader should retain after the details fade. -->
+<!-- Recap what the section taught; introduce no new material. Use bullet points. Vary their number and length according to the key idea; include only what the reader should retain after the details fade. -->
 
 - <A concise retention takeaway.>
 
@@ -277,7 +277,7 @@ Use `_work/assessment-reviews/source-aware-review.md` and `context-language-revi
 
 **Reviewer ID:** <actual reviewer identity>
 **Writer and reviewer are different:** yes
-**Review wave:** <1 | 2 | 3>
+**Review wave:** <positive integer>
 **Assessment bundle SHA-256:** <digest>
 ```
 
@@ -291,7 +291,7 @@ The learner review also records:
 
 ## First pass
 
-<Save before viewing complete learner files. For each question record the task, chosen answer or ambiguity, and evidence of content reasoning or answer cues. Assess each practice's situation and usefulness.>
+<Save before viewing complete learner files. Briefly record each choice or ambiguity, reasoning or cues, and practice usability. Retain this evidence through repairs.>
 
 ## Feedback check
 
@@ -319,3 +319,35 @@ Both records finish with:
 
 Decision: <PASS | FAIL>
 ```
+
+## Release checks
+
+- Record the creation start and any user deadline before source work. Skill maintenance requested beforehand is separate.
+- Include source preparation, writing, assessment, review, repairs and validation in that deadline.
+- For a 30-minute creation, aim to settle the design by minute 5 and finish drafts by minute 15. Protect the remaining time for review and repairs.
+- Check elapsed time at stage changes. Parallelise early and reduce peripheral material before reducing explanation.
+- Require both reviewers' actual approval of every final learner file. Verify current hashes and resolve all blockers.
+- Preserve approvals for unchanged files. Verify changed files and affected relationships with the same reviewers.
+- Never grant approval because time has run out. Report an external block or missed deadline honestly.
+- Record the current skill version in `metadata.yaml` and `overview.md` when generating a summary.
+- Record timing, source limitations, review rounds and validation in `_work/final-audit.md`.
+
+Run the summary checks for `all` and `blink-only`:
+
+```sh
+python scripts/validate_source_work.py <book>
+python scripts/count_reading_time.py <book> --target-minutes 45 --wpm 135
+python scripts/validate_learner_quality.py <book>
+```
+
+Run the output check for the requested mode:
+
+```sh
+python scripts/validate_output.py <book> --mode blink
+python scripts/validate_output.py <book> --mode all --assessment-mode contextual --context-file <path>
+python scripts/validate_output.py <book> --mode assessment --assessment-mode contextual --context-file <path>
+```
+
+- Run only the applicable output command. For generic assessment, use `--assessment-mode generic` and omit `--context-file`.
+- Use the project's Python environment and resolve script paths against this skill directory.
+- Keep reading time advisory. Validators establish structure and review records, not semantic quality.

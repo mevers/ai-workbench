@@ -2,7 +2,7 @@
 
 ## Inputs and scope
 
-Use the complete Blink, its source work and the confirmed application context. Preserve the summary, source files and context. Write only quizzes, review.md, the assessment plan and assessment reviews. A user-requested pilot may cover selected ideas in a separate folder; report its scope without claiming whole-book release.
+In assessment-only mode, require existing approved synthesis files and source work. Preserve them; report missing prerequisites rather than generating a new synthesis. In all mode, draft assessments alongside stable key ideas when useful. Final approval requires alignment with the approved synthesis. Reuse the confirmed application context. Preserve source files and context. Write only quizzes, review.md, the assessment plan and assessment reviews. Record assessment completion in `_work/final-audit.md`. A user-requested pilot may cover selected ideas in a separate folder; report its scope without claiming whole-book release.
 
 The book determines the learning target and correct reasoning. The context determines the role, domain, ownership and constraints. Carry the user’s requirements and supplied examples of useful language into drafting and review; use them to understand the standard, not as a topic or script for every exercise. These instructions govern assessment writing, including when an older context contains different writing advice. Reuse an already confirmed context; ask only when it is missing or materially ambiguous. Generic assessment uses source-grounded recap throughout, without workplace examples or related-reading links.
 
@@ -10,7 +10,7 @@ The book determines the learning target and correct reasoning. The context deter
 
 Choose `FULL` when a credible situation supports useful application and a small practice. Otherwise choose `RECAP_ONLY`: recall plus a different comprehension question. Do not force application to fill the template. If the source cannot support meaningful recap, report the missing prerequisite.
 
-Keep one short plan entry per question or practice using the output template. Record the target and source anchor, context basis where relevant, correct reasoning and a tempting misconception. For practice, record the task and the decision or next step it enables. Do not duplicate learner-facing prose across fields. Design the options together, then record their letters and freeze the plan before independent review.
+Keep one short plan entry per question or practice using the output template. Record the target and source anchor, context basis where relevant, correct reasoning and a tempting misconception. For practice, record the task and the decision or next step it enables. Do not duplicate learner-facing prose across fields. Design the options together, then record their letters and freeze the relevant plan entries before independent review.
 
 ## Scenarios
 
@@ -42,7 +42,7 @@ Keep feedback brief: name the concept, explain the answer and distinguish the st
 
 Start with a specific, recognisable situation in the reader’s role: who is involved, what work they are doing and what has gone wrong or needs deciding. Give clear actions that apply the book’s insight to that situation. A conversation can include related questions needed to reach a decision; do not reduce it to one sentence merely to satisfy an action count. State what the people involved should work out and how that helps the work. Prefer direct instructions to generic coaching questions. Include quoted dialogue only when it sounds natural and helps more than describing the task.
 
-Keep the task focused on the book's lesson. Include related steps when they are needed to reach the practical result; omit detached exercises. General management advice counts as application only when the book's mechanism changes what the learner does.
+Keep the task focused on the key idea being practised. Include related steps when they are needed to reach the practical result; omit detached exercises. General management advice counts as application only when the book's mechanism changes what the learner does.
 
 Apply tests a judgement; Try this must add meaningful practice beyond the Apply answer. They may share a situation when useful. Do not invent another event merely to make them different.
 

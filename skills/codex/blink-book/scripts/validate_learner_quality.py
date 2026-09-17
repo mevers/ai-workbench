@@ -118,8 +118,8 @@ def validate_review(
         if section(review, heading) is None:
             errors.append(f"{review_path.name}: missing required section: {heading}")
     review_wave = field(review, "Review wave")
-    if review_wave not in {"1", "2", "3"}:
-        errors.append(f"{review_path.name}: Review wave must be 1, 2, or 3")
+    if not re.fullmatch(r"[1-9][0-9]*", review_wave or ""):
+        errors.append(f"{review_path.name}: Review wave must be a positive integer")
     if review_kind == "source-blind":
         style = section(review, "Plain-language and style")
         if style is None:

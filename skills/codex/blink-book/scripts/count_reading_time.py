@@ -10,7 +10,7 @@ from pathlib import Path
 
 
 DEFAULT_WPM = 135
-DEFAULT_LIMIT_MINUTES = 45
+DEFAULT_TARGET_MINUTES = 45
 
 
 def strip_markdown_noise(text: str) -> str:
@@ -38,7 +38,11 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("book_dir", type=Path, help="Book output folder")
     parser.add_argument("--wpm", type=int, default=DEFAULT_WPM)
-    parser.add_argument("--limit-minutes", type=int, default=DEFAULT_LIMIT_MINUTES)
+    parser.add_argument(
+        "--target-minutes", "--limit-minutes", dest="target_minutes",
+        type=int, default=DEFAULT_TARGET_MINUTES,
+        help="Editorial target; exceeding it does not fail the check",
+    )
     args = parser.parse_args()
 
     book_dir = args.book_dir.expanduser().resolve()
@@ -59,13 +63,13 @@ def main() -> int:
     print(f"Total learner-facing summary words: {total}")
     print(f"Estimated reading time at {args.wpm} wpm: {minutes:.1f} minutes")
 
-    if minutes > args.limit_minutes:
+    if minutes > args.target_minutes:
         print(
-            f"FAIL: reading time exceeds {args.limit_minutes} minutes. Compress before delivery.",
-            file=sys.stderr,
+            f"NOTE: reading time exceeds the {args.target_minutes}-minute editorial target. "
+            "Preserve explanation needed for understanding."
         )
-        return 1
-    print("OK: reading time is within limit.")
+    else:
+        print("Reading time is within the editorial target.")
     return 0
 
 

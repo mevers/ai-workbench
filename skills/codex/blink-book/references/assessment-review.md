@@ -1,37 +1,23 @@
 # Assessment review and release
 
-## Independent reviews
+Use a source reviewer and a learner reviewer, different from each other and from the assessed material's author. They may be the same people as the summary reviewers. Give them the user's standards and confirmed context. Keep writer rationale, prior review findings and the other reviewer's judgement out of the initial review.
 
-Use two reviewers different from the writer and each other, with no conversation fork. They review concurrently and do not edit learner files. Give both the user’s requirements and supplied examples of useful or unhelpful language. Withhold writer rationale, earlier model reviews, repair history, expected verdicts on the current draft and the other review. Independence must not withhold the user’s standards.
+## Complete-content round
 
-### Source reviewer
+The source reviewer checks targets, answers, feedback and practice against the approved key ideas, plan and relevant source passages. Investigate ambiguity directly in the book. Verify that printed facts support the requested judgement, the strongest alternative is wrong for a meaningful reason, and practice uses the book's mechanism. A preliminary inquiry must not be presented as an established diagnosis.
 
-Supply the key ideas, bounded source excerpts, plan, context and final assessment. Check each target and answer against its source. Check that the situation actually supports the requested judgement, the strongest distractor is wrong for the stated reason, and practice exercises the relevant mechanism. Distinguish a first diagnostic question from evidence that a diagnosis is established. Direct recall is valid when it retrieves a central idea.
+The learner reviewer first receives copies with entire answer blocks removed using `validate_assessment.py --blind-file`. For each question, save the selected answer or ambiguity and any cue; for practice, check the printed people, work, problem, action and useful result. Correct selection alone is insufficient. An answer must not stand out through polish, length, caution or an obviously unreasonable set of alternatives. A practice must be usable without inventing its central task. Save the first pass before opening full files, then check feedback without erasing initial findings.
 
-### Learner reviewer
+Keep records concise: brief per-item evidence and exact defects are enough. Review completed groups in parallel with writing elsewhere, then check the complete bundle's scope and variety. If a key idea changes, check its assessment alignment.
 
-First supply the user’s brief, context and learner files with **entire answer blocks removed**, including explanations. Do not supply source notes, plans or keys. Use `scripts/validate_assessment.py --blind-file <quiz>` to produce each blinded copy.
+## Consolidate and verify
 
-Before seeing feedback, record for each question: the intended task, the selected answer or ambiguity, and what drove that choice. Check whether the stem gives away the reasoning or one option stands out through scope, wording or polish. Correct selection alone is not a pass. For Apply, identify details that can be removed without changing the judgement. For practice, identify the people, work and problem from the printed exercise. Fail if you must invent details to make the situation specific or relatable. Then check whether the actions clearly apply the book’s insight. Judge whether the intended reader could use the exact wording in an ordinary conversation. Shortness, grammatical clarity and a single question do not establish usefulness. Related questions may form one practical task; reject disconnected exercises or a generic prompt that leaves the reader to invent the useful conversation.
+Missing facts, wrong or ambiguous answers, implausible scenarios, answer cues, material reading difficulty and unusable practice are blockers. Optional polish is advisory. Replace weak items as whole questions or exercises; do not add defensive clauses. Prefer a source-grounded recap when the context does not support useful application.
 
-Save this first pass in the review record. Only then provide the complete learner files for a feedback check. Preserve the first-pass findings and add any issues in the explanations. Do not silently reinterpret a confusing item after seeing its answer.
+Keep the same reviewer pair through completion. After one consolidated repair, verify changed quizzes, relevant plan sections and affected dependencies. Preserve unchanged approvals and first-pass evidence. A changed question receives a new answer-blind attempt before feedback is checked. Broad changes justify broader checking; local changes do not restart the complete assessment review.
 
-## Decisions and repair
+Reviewers maintain their own `_work/assessment-reviews/source-aware-review.md` and `context-language-review.md` using the output schema. Include every file's decision, a positive review-wave number and the current aggregate bundle digest. Record which files were verified again and which earlier approvals were retained. Update the source record's plan digest after checking changed plan entries. Context changes affect both reviewers. Do not refresh a digest without the corresponding verification.
 
-A `BLOCKER` includes incorrect or ambiguous answers, unsupported reasoning, implausible situations, missing facts, material first-read difficulty, answer cues, a stem that gives away its answer, or a practice with no usable task, unnatural dialogue or disconnected exercises. These fail even when the keyed answer is factually defensible. Quote the passage and explain the defect without mentally rewriting it.
+PASS requires no unresolved blockers, current hashes and both semantic approvals. Run `validate_output.py` for the requested mode. These checks establish reviewed completion, not mastery or guaranteed future learning.
 
-An `ADVISORY` is optional polish that does not affect understanding, usability or the value of the question. The writer may address advisories in the same consolidated repair as blockers; they do not require their own review loop. Replace or drop weak items instead of adding clauses to defend them.
-
-Run at most three paired rounds, using fresh reviewers after repairs. Review the complete current assessment scope each time. Stop incomplete if blockers remain in round three or the skill's 60-minute invocation budget expires. If separate reviewers are unavailable, report the missing review and leave the output incomplete.
-
-Each reviewer authors the record in the output template. Use PASS only with `None.` under Blockers. Any learner edit invalidates both reviews; plan edits invalidate source review; context edits invalidate both. Keep the source reviewer bound to the plan digest and both reviewers bound to the assessment bundle digest. A pilot records only its tested scope.
-
-## Validation and release
-
-After semantic PASS, run `scripts/validate_output.py` in the selected mode. Before finalising review records, use `scripts/validate_assessment.py <book> --print-bundle-digest` and record the plan's SHA-256 in the source review. The validator checks schemas, keys, context provenance, links, declared reviewer separation and digest freshness. It cannot establish practical realism, source fidelity, review independence in fact or assessment quality. Length warnings prompt inspection; they are not quality scores.
-
-For format 2, the learner record must preserve `## First pass` and `## Feedback check`, and confirm that answers and explanations were withheld until the first pass was saved. Older assessment records retain their original structural contract; passing their validation does not certify them under this workflow.
-
-When changing this subsystem, run `scripts/test_validate_assessment.py`. Also test behaviour independently on known failures and fresh generated items. Give test authors the skill and minimum source/context inputs, not the desired wording or prior diagnosis. For a redesign, include held-out books with different mechanisms and assessment modes. Known examples calibrate the standard; recognising them is not independent proof. Judge whether fresh tasks are clear, credible and meaningful; do not turn wording preferences into exact-match tests.
-
-Release only with both semantic PASS records and structural validation for the final files. Report a scoped pilot as a pilot, never as a repaired full assessment. A user rejection remains a failed result even when model reviewers pass; preserve that evidence and reassess the design.
+When changing assessment validation, run `test_validate_assessment.py`. Validate workflow changes on actual generated assessments and preserve user-rejected results as evidence rather than treating previous model agreement as proof.

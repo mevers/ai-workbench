@@ -334,8 +334,8 @@ def validate_review_record(
     if field_value(text, "**Writer and reviewer are different:**") != "yes":
         errors.append(f"{label}: writer/reviewer independence is not confirmed")
     review_wave = field_value(text, "**Review wave:**")
-    if review_wave not in {"1", "2", "3"}:
-        errors.append(f"{label}: Review wave must be 1, 2, or 3")
+    if not re.fullmatch(r"[1-9][0-9]*", review_wave or ""):
+        errors.append(f"{label}: Review wave must be a positive integer")
     if field_value(text, "**Assessment bundle SHA-256:**") != bundle_digest:
         errors.append(f"{label}: stale review; assessment bundle digest does not match")
     blockers = markdown_section(text, "Blockers")

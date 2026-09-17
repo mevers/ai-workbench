@@ -435,12 +435,70 @@ def main() -> int:
         refresh_reviews(case_book, case / "application-context.md", same_reviewer=True)
         require_failure(run(case_book, case / "application-context.md"), "reviewers must have distinct Reviewer IDs")
 
-        case = root / "invalid-review-wave"
+        case = root / "wave-four"
         shutil.copytree(contextual.parent.parent, case)
         case_book = case / "books" / "fixture-book"
         review = case_book / "_work" / "assessment-reviews" / "source-aware-review.md"
         review.write_text(review.read_text().replace("**Review wave:** 1", "**Review wave:** 4"), encoding="utf-8")
-        require_failure(run(case_book, case / "application-context.md"), "Review wave must be 1, 2, or 3")
+        if (result := run(case_book, case / "application-context.md")).returncode:
+            raise AssertionError(f"Wave 4 should remain valid:\n{result.stdout}")
+
+        for index, wave in enumerate(("0", "-1", "four", "1.5", "")):
+            case = root / f"invalid-review-wave-{index}"
+            shutil.copytree(contextual.parent.parent, case)
+            case_book = case / "books" / "fixture-book"
+            review = case_book / "_work" / "assessment-reviews" / "source-aware-review.md"
+            review.write_text(review.read_text().replace("**Review wave:** 1", f"**Review wave:** {wave}"), encoding="utf-8")
+            require_failure(run(case_book, case / "application-context.md"), "Review wave must be a positive integer")
+
+        case = root / "stale-plan-review"
+        shutil.copytree(contextual.parent.parent, case)
+        case_book = case / "books" / "fixture-book"
+        plan = case_book / "_work" / "assessment-plan.md"
+        plan.write_text(plan.read_text() + "\nAdditional source clarification.\n", encoding="utf-8")
+        require_failure(run(case_book, case / "application-context.md"), "stale review; plan digest does not match")
+
+        case = root / "stale-context-review"
+        shutil.copytree(contextual.parent.parent, case)
+        case_book = case / "books" / "fixture-book"
+        changed_context = case / "application-context.md"
+        old_context_digest = sha256(changed_context)
+        changed_context.write_text(changed_context.read_text() + "\nReports may be revised before sharing.\n", encoding="utf-8")
+        plan = case_book / "_work" / "assessment-plan.md"
+        plan.write_text(plan.read_text().replace(old_context_digest, sha256(changed_context)), encoding="utf-8")
+        aware = case_book / "_work" / "assessment-reviews" / "source-aware-review.md"
+        aware.write_text(re.sub(r"(\*\*Plan SHA-256:\*\*) .*", rf"\1 {sha256(plan)}", aware.read_text()), encoding="utf-8")
+        require_failure(run(case_book, changed_context), "stale review; context digest does not match")
+
+        case = root / "changed-assessment-reapproval"
+        shutil.copytree(contextual.parent.parent, case)
+        case_book = case / "books" / "fixture-book"
+        case_context = case / "application-context.md"
+        use_format_two(case_book, case_context)
+        review_dir = case_book / "_work" / "assessment-reviews"
+        reviewers = [review_dir / name for name in ("source-aware-review.md", "context-language-review.md")]
+        prior_records = {path: path.read_text() for path in reviewers}
+        unchanged_assessment = case_book / "review.md"
+        unchanged_content = unchanged_assessment.read_bytes()
+        old_bundle = bundle_digest(case_book)
+        quiz = case_book / "quizzes" / "key-idea-01-comprehension.md"
+        quiz.write_text(quiz.read_text().replace("written report", "analysis report", 1), encoding="utf-8")
+        require_failure(run(case_book, case_context), "stale review; assessment bundle digest does not match")
+        for index, reviewer in enumerate(reviewers):
+            updated = prior_records[reviewer].replace(old_bundle, bundle_digest(case_book))
+            updated = updated.replace("**Review wave:** 1", "**Review wave:** 4")
+            updated = updated.replace(
+                "### quizzes/key-idea-01-comprehension.md\n\n**Findings:** None.",
+                "### quizzes/key-idea-01-comprehension.md\n\n**Findings:** None. Changed wording verified; approval renewed at wave 4.",
+            )
+            reviewer.write_text(updated, encoding="utf-8")
+            if index == 0:
+                require_failure(run(case_book, case_context), "stale review; assessment bundle digest does not match")
+            assert updated.split("### review.md", 1)[1] == prior_records[reviewer].split("### review.md", 1)[1]
+            assert validate_assessment.field_value(updated, "**Reviewer ID:**") == validate_assessment.field_value(prior_records[reviewer], "**Reviewer ID:**")
+        assert unchanged_assessment.read_bytes() == unchanged_content
+        if (result := run(case_book, case_context)).returncode:
+            raise AssertionError(f"Updated bundle approvals should retain unchanged file decisions and blinding record:\n{result.stdout}")
 
         case = root / "pass-with-blocker"
         shutil.copytree(contextual.parent.parent, case)

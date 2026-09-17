@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Exercise the learner-quality validator's bounded-review invariants."""
+"""Exercise the learner-quality validator's review-wave and current-file approval invariants."""
 
 from __future__ import annotations
 
@@ -115,11 +115,37 @@ def main() -> int:
         if (result := run(case)).returncode:
             raise AssertionError(f"PASS with an advisory should remain valid:\n{result.stdout}\n{result.stderr}")
 
-        case = root / "invalid-wave"
+        case = root / "wave-four"
         shutil.copytree(book, case)
         review = case / "_work" / "final-reviews" / "overview-source-aware-review.md"
         review.write_text(review.read_text().replace("**Review wave:** 1", "**Review wave:** 4"), encoding="utf-8")
-        require_failure(run(case), "Review wave must be 1, 2, or 3")
+        if (result := run(case)).returncode:
+            raise AssertionError(f"Wave 4 should remain valid:\n{result.stdout}\n{result.stderr}")
+
+        for index, wave in enumerate(("0", "-1", "four", "1.5", "")):
+            case = root / f"invalid-wave-{index}"
+            shutil.copytree(book, case)
+            review = case / "_work" / "final-reviews" / "overview-source-aware-review.md"
+            review.write_text(review.read_text().replace("**Review wave:** 1", f"**Review wave:** {wave}"), encoding="utf-8")
+            require_failure(run(case), "Review wave must be a positive integer")
+
+        case = root / "changed-file-reapproval"
+        shutil.copytree(book, case)
+        unchanged_reviews = {
+            path: path.read_bytes()
+            for path in (case / "_work" / "final-reviews").glob("*.md")
+        }
+        idea = case / "key-idea-01.md"
+        idea.write_text(idea.read_text().replace("evidence cited for it", "evidence supporting it"), encoding="utf-8")
+        require_failure(run(case), "review does not record the current SHA-256 for key-idea-01.md")
+        for kind in ("source-aware", "source-blind"):
+            review = case / "_work" / "key-idea-drafts" / f"key-idea-01-{kind}-review.md"
+            review.write_text(review_text(kind, idea).replace("**Review wave:** 1", "**Review wave:** 4"), encoding="utf-8")
+            if kind == "source-aware":
+                require_failure(run(case), "review does not record the current SHA-256 for key-idea-01.md")
+        if (result := run(case)).returncode:
+            raise AssertionError(f"Reapproving the changed file should retain unchanged approvals:\n{result.stdout}")
+        assert all(path.read_bytes() == content for path, content in unchanged_reviews.items())
 
         case = root / "pass-with-blocker"
         shutil.copytree(book, case)

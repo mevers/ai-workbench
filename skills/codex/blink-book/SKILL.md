@@ -147,6 +147,7 @@ metadata:
 - Store original source visuals in `visuals/`.
 - Store the visual inventory in `visuals/inventory.md`.
 - Store extraction, plans, drafts and review records in `_work/`.
+- Format overviews using [the overview template](references/overview-template.md).
 - Format key ideas using [the key-idea template](references/key-idea-template.md).
 - Put assessments in `quizzes/key-idea-NN-comprehension.md` and `review.md`. Link key ideas to their quizzes in `all` mode.
 - Link new overviews to all included reader sections and any visual inventory.

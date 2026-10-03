@@ -5,7 +5,7 @@ Reusable AI skills, prompts, workflows, scripts, and templates shared across too
 ## Structure
 
 - `skills/codex/`: Codex skills, kept in their complete skill-folder format.
-- `skills/shared/`: Tool-agnostic skill references or reusable capability notes.
+- `skills/shared/`: Skills that work across AI agents.
 - `prompts/`: Reusable prompts grouped by task or domain.
 - `workflows/`: Multi-step procedures that may combine prompts, skills, scripts, and external tools.
 - `scripts/`: Standalone helper scripts that are not bundled inside a specific skill.
@@ -17,6 +17,7 @@ Reusable AI skills, prompts, workflows, scripts, and templates shared across too
 - `skills/codex/comment-python-code`: Add concise comments to Python files or snippets without changing executable code or adding docstrings.
 - `skills/codex/management-coach`: Sam, your personal management coach for data science leadership, explicitly invoked with `$management-coach` and backed by separate private memory.
 - `skills/codex/linkedin-extract`: Extract structured YAML from LinkedIn profile and job URLs using a user-authenticated Playwright browser.
+- `skills/shared/process-clips`: Process COG Clipper captures through COG’s existing braindump skill and clear completed captures from the inbox.
 
 ## Local setup
 

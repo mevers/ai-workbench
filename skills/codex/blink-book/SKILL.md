@@ -35,6 +35,7 @@ metadata:
 ## Check the source
 
 - Require the complete PDF or EPUB. Check access to its text and original figures.
+- Run `scripts/extract_visuals.py` to extract all original source figures into `visuals/`, regardless of which figures are included in the synthesis.
 - Save searchable text with page or section references. Reuse verified extraction when available.
 - Read relevant passages as needed. Do not load the whole book at once.
 

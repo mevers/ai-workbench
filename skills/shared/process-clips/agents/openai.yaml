@@ -1,0 +1,7 @@
+interface:
+  display_name: "Process COG clips"
+  short_description: "Hand pending COG clips to braindump"
+  default_prompt: "Use $process-clips to process my pending clippings."
+
+policy:
+  allow_implicit_invocation: true

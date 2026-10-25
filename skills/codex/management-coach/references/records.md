@@ -1,8 +1,8 @@
-# Memory protocol
+# Coaching records
 
 ## Purpose and locations
 
-The dedicated memory repository provides continuity across Codex conversations and working repositories. Its files are human-readable and editable. Keep the smallest useful record, not a transcript or a second copy of the work second brain.
+The coaching records folder provides continuity across Codex conversations and working folders. Its files are human-readable and editable. Keep the smallest useful record, not a transcript or a second copy of the work second brain.
 
 - `README.md`: navigation and current context/session links.
 - `profile.md`: editable coach name, communication preferences, user background, and stable context.
@@ -12,11 +12,13 @@ The dedicated memory repository provides continuity across Codex conversations a
 - `onboarding.md`: what has been learned and what remains useful to explore.
 - `sessions/`: concise dated coaching notes. Create files as useful; do not scaffold empty people or case files.
 
-The current repository is a possible source of relevant material, not the default memory destination. Company records remain in their own repositories; memory can link to them and preserve a small amount of essential context with provenance.
+All paths above are relative to the coaching records folder. Read files that exist. Create files only when there is information to save. Do not create empty files or require Git.
 
-## Updating memory
+The working folder can supply relevant material. It is not a destination for automatic coaching records. Company documents remain in their source folders. Coaching records can link to them and preserve a small amount of essential context with provenance.
 
-Automatic local updates are authorised while coaching is active. Do not repeatedly ask permission to record stated goals, meaningful new context, explicit decisions, or agreed follow-ups. After the relevant exchange, save before returning the response and briefly identify the change, usually in one sentence with a link. Do not record every conversational detail.
+## Update records
+
+Automatic updates in the coaching records folder are authorised while coaching is active. Do not repeatedly ask permission to record stated goals, meaningful new context, explicit decisions, or agreed follow-ups. After the relevant exchange, save before returning the response and briefly identify the change, usually in one sentence with a link. Do not record every conversational detail.
 
 Read each target immediately before editing. Preserve user edits and unrelated entries. Use targeted edits rather than regenerating a whole profile or journal. Use a distinct session filename such as `YYYY-MM-DD-HHMMSS-topic.md`, with a suffix if it already exists. Update the same session note during that conversation and link it from the index. Keep parallel conversations in separate session files. If overlapping edits to a shared summary are detected, reread and reconcile them; never blindly overwrite the other changes. A file-based system does not provide transactional multi-session writes.
 
@@ -41,6 +43,6 @@ Consolidate repetitive notes when they impair retrieval: keep the current unders
 
 ## Source boundaries and repository operations
 
-Keep private coaching information in this repository. Do not copy it into the reusable skill, unrelated repositories, public searches, commits to another repo, or externally shared documents. Read the work second brain as needed; COG operations are a distinct user-directed workflow. No cloud memory service, database, embeddings, background task, external message, Git commit, remote creation, or push is part of an automatic memory update.
+Keep private coaching information in the coaching records folder. For an explicitly requested or approved save elsewhere, follow the save procedure in `SKILL.md`. Do not include private coaching information in public searches. Read work documents as needed; changes to them require a separate user instruction. No cloud memory service, database, embeddings, background task, external message, Git commit, remote creation, or push is part of an automatic record update.
 
-Local Git history can be used when the user requests commits. A local repository with no remote is the initial setup; it is not a claim of encryption or access control. Runtime permissions still govern access from another workspace. Do not edit global sandbox or approval settings to make memory work.
+Local Git history can be used when the user requests commits. Git is optional and does not provide encryption or access control. Runtime permissions still govern access from another workspace. Do not edit global sandbox or approval settings to make record access work.
